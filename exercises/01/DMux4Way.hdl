@@ -1,0 +1,23 @@
+/**
+ * 4-way demultiplexor:
+ * {a, b, c, d} = {in, 0, 0, 0} if sel == 00
+ *                {0, in, 0, 0} if sel == 01
+ *                {0, 0, in, 0} if sel == 10
+ *                {0, 0, 0, in} if sel == 11
+ */
+
+CHIP DMux4Way {
+    IN in, sel[2];
+    OUT a, b, c, d;
+
+    PARTS:
+    DMux(in=in, sel=sel[0], a=out0A, b=out0B);
+    DMux(in=in, sel=sel[0], a=out0C, b=out0D);
+    DMux(in=in, sel=sel[1], a=out1A, b=out1C);
+    DMux(in=in, sel=sel[1], a=out1B, b=out1D);
+
+    And(a=out0A, b=out1A, out=a);
+    And(a=out0B, b=out1B, out=b);
+    And(a=out0C, b=out1C, out=c);
+    And(a=out0D, b=out1D, out=d);
+}
