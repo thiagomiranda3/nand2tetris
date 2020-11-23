@@ -30,7 +30,6 @@ CHIP ALU {
         ny, // negate the y input?
         f,  // compute out = x + y (if 1) or x & y (if 0)
         no; // negate the out output?
-
     OUT 
         out[16], // 16-bit output
         zr, // 1 if (out == 0), 0 otherwise
@@ -66,11 +65,8 @@ CHIP ALU {
     And16(a=res, b[15]=true, out[15]=ng);
 
     // Handle control flag zr
-    Mux16(a=res, b=false, sel=false, out[0..7]=lsbOut, out[8..15]=msbOut);
-    Or8Way(in=lsbOut, out=zrlsb);
-    Or8Way(in=msbOut, out=zrmsb);
-    Or(a=zrlsb, b=zrmsb, out=zrOut);
-    Not(in=zrOuts, out=zr);
+    Or16Way(in=res, out=zrOut);
+    Not(in=zrOut, out=zr);
 
     Or16(a=res, b=false, out=out);
 }
