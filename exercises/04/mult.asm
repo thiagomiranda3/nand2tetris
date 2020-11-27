@@ -37,7 +37,7 @@ M=D
     @i
     D=M
     @END
-    D;JEQ   // if i >= R1 goto END
+    D;JEQ   // if i == 0 goto END
 
     @operand
     D=M
