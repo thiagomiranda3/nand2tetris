@@ -28,7 +28,7 @@
     // Key pressed
     (CHOOSE_COLOR)
         @color
-        M=-1
+        M=-1     // 2 complement 1111111111111111
 
     (PRINT_SCREEN)
         @screen_ptr
@@ -41,7 +41,7 @@
         @color
         D=M
         @screen_ptr
-        A=M
+        A=M     // Indirect access through pointer
         M=D     // screen position = color
 
         @screen_ptr
@@ -49,6 +49,3 @@
         
         @PRINT_SCREEN
         0;JMP
-
-    @LISTEN_KBD
-    D;JNE
