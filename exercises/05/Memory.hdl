@@ -22,21 +22,20 @@
     OUT out[16];
 
     PARTS:
-    // If bit 14 is 0, the adress is from RAM location
-    // Bits between 000 0000 0000 0000 and 011 1111 1111 1111
-    Not(in=address[14], out=isRam);
-    And(a=isRam, b=load, out=loadRam);
+    // RAM
+    // [00]0 0000 0000 0000
+    // [01]1 1111 1111 1111
+    // Screen
+    // [10]0 0000 0000 0000
+    // [10]0 1111 1111 1111
+    // Keyboard
+    // [11]0 0000 0000 0000
+    DMux4Way(in=load, sel=address[13..14], a=ram1, b=ram2, c=loadScreen, d=ignored);
+    Or(a=ram1, b=ram2, out=loadRam);
+    
     RAM16K(in=in, load=loadRam, address=address[0..13], out=outRam);
-
-    // If bit 14 is 1 and bit 13 is 0, the adress is from SCREEN location
-    // Bits between 100 0000 0000 0000 and 100 1111 1111 1111
-    Not(in=address[13], out=notadr13);
-    And(a=notadr13, b=address[14], out=isScreen);
-    And(a=isScreen, b=load, out=loadScreen);
     Screen(in=in, load=loadScreen, address=address[0..12], out=outScreen);
 
-    // If bit 14 and 13 is 1 and all other bits are 0, the address is from KEYBOARD location
-    // Bit 110 0000 0000 0000
     And(a=address[13], b=address[14], out=canBeKbd);
     Or8Way(in=address[0..7], out=anyOne07);
     Or8Way(in=address[5..12], out=anyOne512);
