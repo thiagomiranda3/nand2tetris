@@ -17,7 +17,7 @@
  * Screen and Keyboard chip specifications given in the book.
  */
 
-CHIP Memory {
+ CHIP Memory {
     IN in[16], load, address[15];
     OUT out[16];
 
@@ -26,16 +26,14 @@ CHIP Memory {
     // Bits between 000 0000 0000 0000 and 011 1111 1111 1111
     Not(in=address[14], out=isRam);
     And(a=isRam, b=load, out=loadRam);
-    RAM16K(in=in, load=loadRam, address=address[0..13], out=ram16);
-    Mux16(a=false, b=ram16, sel=isRam, out=outRam);
+    RAM16K(in=in, load=loadRam, address=address[0..13], out=outRam);
 
     // If bit 14 is 1 and bit 13 is 0, the adress is from SCREEN location
     // Bits between 100 0000 0000 0000 and 100 1111 1111 1111
     Not(in=address[13], out=notadr13);
     And(a=notadr13, b=address[14], out=isScreen);
     And(a=isScreen, b=load, out=loadScreen);
-    Screen(in=in, load=loadScreen, address=address[0..12], out=screen);
-    Mux16(a=false, b=screen, sel=isScreen, out=outScreen);
+    Screen(in=in, load=loadScreen, address=address[0..12], out=outScreen);
 
     // If bit 14 and 13 is 1 and all other bits are 0, the address is from KEYBOARD location
     // Bit 110 0000 0000 0000
@@ -48,6 +46,5 @@ CHIP Memory {
     Keyboard(out=kdb);
     Mux16(a=false, b=kdb, sel=isKbd, out=outKbd);
 
-    Or16(a=outRam, b=outScreen, out=outRamOrScreen);
-    Or16(a=outRamOrScreen, b=outKbd, out=out);
+    Mux4Way16(a=outRam, b=outRam, c=outScreen, d=outKbd, sel=address[13..14], out=out);
 }
