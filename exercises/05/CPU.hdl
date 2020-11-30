@@ -19,7 +19,7 @@ CHIP CPU {
 
     Not(in=instruction[15], out=Ainst);
     Or(a=Ainst, b=CinstDestA, out=loadA);
-    Register(in=toRegA, load=loadA, out=A, out[0..14]=addressM);
+    ARegister(in=toRegA, load=loadA, out=A, out[0..14]=addressM);
 
     And(a=instruction[15], b=instruction[3], out=writeM);
 
