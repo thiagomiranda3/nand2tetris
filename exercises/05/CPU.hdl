@@ -19,50 +19,33 @@ CHIP CPU {
 
     Not(in=instruction[15], out=Ainst);
     Or(a=Ainst, b=CinstDestA, out=loadA);
-    Register(in=toRegA, load=loadA, out=outRegA);
+    Register(in=toRegA, load=loadA, out=A, out[0..14]=addressM);
+
+    And(a=instruction[15], b=instruction[3], out=writeM);
 
     // Second parameter to ALU, can be the memory value or de A register
-    Mux16(a=outRegA, b=inM, sel=instruction[12], out=inToAlu);
+    Mux16(a=A, b=inM, sel=instruction[12], out=inToAlu);
 
     // Handler D Register
     And(a=instruction[15], b=instruction[4], out=CinstDestD);
-    Register(in=outAlu, load=CinstDestD, out=outRegD);
+    DRegister(in=outAlu, load=CinstDestD, out=D);
 
-    ALU(x=outRegD, y=inToAlu, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outAlu, zr=zr, ng=ng);
-
-    // Handler M register
-    And(a=instruction[15], b=instruction[3], out=CinstDestM);
-    Or(a=CinstDestM, b=false, out=writeM);
-    Or16(a=outAlu, b=false, out=outM);
-    Or16(a=outRegA, b=false, out[0..14]=addressM);
+    ALU(x=D, y=inToAlu, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outAlu, out=outM, zr=zr, ng=ng);
 
     // Handler PC
-    DMux8Way(in=instruction[15], sel[0]=instruction[0], sel[1]=instruction[1], sel[2]=instruction[2], a=noJMP, b=JGT, c=JEQ, d=JGE, e=JLT, f=JNE, g=JLE, h=JMP);
-
-    // ng - zr
-    // 0    0 => Positive
-    // 0    1 => Zero
-    // 1    0 => Negative
-
     Not(in=ng, out=notNg);
     Not(in=zr, out=notZr);
-    And(a=notNg, b=notZr, out=positive);
-    Not(in=zr, out=nonZero);
-    And(a=noJMP, b=false, out=load0);
-    And(a=JGT, b=positive, out=load1);
-    And(a=JEQ, b=zr, out=load2);
-    Or(a=positive, b=zr, out=isJGE);
-    And(a=JGE, b=isJGE, out=load3);
-    And(a=JLT, b=ng, out=load4);
-    And(a=JNE, b=nonZero, out=load5);
-    Or(a=ng, b=zr, out=isJLE);
-    And(a=JLE, b=isJLE, out=load6);
-    And(a=JMP, b=true, out=load7);
-
-    Or8Way(in[0]=load0, in[1]=load1, in[2]=load2, in[3]=load3, in[4]=load4, in[5]=load5,in[6]=load6, in[7]=load7, out=load);
+    And(a=notNg, b=notZr, out=isPositive);
+    
+    And(a=isPositive, b=instruction[0], out=JGT);
+    And(a=zr, b=instruction[1], out=JEQ);
+    And(a=ng, b=instruction[2], out=JLT);
+    Or(a=JGT, b=JEQ, out=JGE);
+    Or(a=JGE, b=JLT, out=hasJump);
+    
+    And(a=hasJump, b=instruction[15], out=load);
     Not(in=load, out=inc);
 
-    Mux16(a=outPc, b=outRegA, sel=load, out=inPc);
-    PC(in=inPc, load=load, inc=inc, reset=reset, out=outPc);
-    Or16(a=outPc, b=false, out[0..14]=pc);
+    Mux16(a=outPc, b=A, sel=load, out=inPc);
+    PC(in=inPc, load=load, inc=inc, reset=reset, out=outPc, out[0..14]=pc);
 }
