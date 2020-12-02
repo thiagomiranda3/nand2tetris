@@ -10,6 +10,8 @@ public final class SymbolTable {
     private static Map<String, String> initTable() {
         final Map<String, String> table = new HashMap<>();
 
+        table.put("SCREEN", "0100000000000000");
+
         return table;
     }
 
