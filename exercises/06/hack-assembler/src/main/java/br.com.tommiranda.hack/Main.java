@@ -65,7 +65,7 @@ public class Main {
 
         int memoryPosition = 16;
 
-        try (FileWriter writer = new FileWriter(fileName + ".jack")) {
+        try (FileWriter writer = new FileWriter(fileName + ".hack")) {
             for (String line : lines) {
                 line = line.replace("\n", "")
                            .replace("\t", "")
@@ -85,7 +85,7 @@ public class Main {
 
                     if (NumberUtils.isDigits(symbol)) {
                         writer.write(StringUtils.leftPad(Integer.toBinaryString(Integer.parseInt(symbol)), 16, "0") + System.lineSeparator());
-                    } else if (symbol.startsWith("R")) {
+                    } else if (isReference(symbol)) {
                         writer.write(StringUtils.leftPad(Integer.toBinaryString(Integer.parseInt(symbol.substring(1))), 16, "0") + System.lineSeparator());
                     } else if (SymbolTable.contains(symbol)) {
                         writer.write(SymbolTable.get(symbol) + System.lineSeparator());
@@ -97,8 +97,8 @@ public class Main {
                     CInstruction c = new CInstruction(line);
 
                     String machineCode = "111" +
-                                         CodeTable.getDest(c.getDest()) +
                                          CodeTable.getComp(c.getComp()) +
+                                         CodeTable.getDest(c.getDest()) +
                                          CodeTable.getJump(c.getJump());
 
                     writer.write(machineCode + System.lineSeparator());
@@ -107,14 +107,25 @@ public class Main {
         }
     }
 
+    private static boolean isReference(String symbol) {
+        if (!symbol.startsWith("R"))
+            return false;
+
+        String reference = symbol.substring(1);
+
+        if (!NumberUtils.isDigits(reference))
+            return false;
+
+        return Integer.parseInt(reference) < 16;
+    }
+
     private static String lineWithoutComment(String line) {
         int idx = line.indexOf("/");
 
-        if (idx == 0) {
+        if (idx == 0)
             return null;
-        } else if (idx > 0) {
-            line = line.substring(0, idx);
-        }
+        else if (idx > 0)
+            return line.substring(0, idx);
 
         return line;
     }
