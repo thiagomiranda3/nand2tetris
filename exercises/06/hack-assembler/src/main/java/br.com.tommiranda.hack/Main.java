@@ -24,7 +24,6 @@ public class Main {
         String fileName = FilenameUtils.getBaseName(path.toString());
         List<String> lines = Files.readAllLines(path);
 
-
         Iterator<String> it = lines.iterator();
 
         int lineNumber = 0;

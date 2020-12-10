@@ -19,11 +19,6 @@ public class Util {
         return map != null ? map : Collections.emptyMap();
     }
 
-    public static boolean isGenericType(Class<?> clazz) throws ClassNotFoundException
-    {
-        return clazz.getTypeParameters().length > 0;
-    }
-
     public static boolean isNullOrEmpty(String string) {
         return (string == null || string.isEmpty());
     }
@@ -38,13 +33,5 @@ public class Util {
 
     public static boolean stringOK(String string) {
         return !Util.isNullOrEmpty(string);
-    }
-
-    public static boolean equalStrings(String thisString, String thatString) {
-        if (thisString == null || thatString == null) {
-            return false;
-        }
-
-        return thisString.equals(thatString);
     }
 }
