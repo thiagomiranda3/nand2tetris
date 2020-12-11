@@ -25,7 +25,6 @@ public final class ParserMap {
         types.put("pop argument", new PopSegmentParser());
         types.put("pop this", new PopSegmentParser());
         types.put("pop that", new PopSegmentParser());
-        types.put("pop constant", new PopConstantParser());
         types.put("pop pointer", new PopPointerParser());
         types.put("pop static", new PopStaticParser());
         types.put("pop temp", new PopTempParser());

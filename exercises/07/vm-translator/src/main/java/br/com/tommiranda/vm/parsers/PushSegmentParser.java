@@ -7,7 +7,7 @@ import java.util.List;
 public class PushSegmentParser implements Parser {
 
     @Override
-    public String parse(List<String> tokens) {
+    public String parse(String fileName, List<String> tokens) {
         String segment = tokens.get(1);
         String position = tokens.get(2);
 

@@ -40,7 +40,7 @@ public class Main {
                 }
 
                 writer.write("// " + line + System.lineSeparator());
-                writer.write(parser.parse(tokens) + System.lineSeparator());
+                writer.write(parser.parse(fileName, tokens) + System.lineSeparator());
             }
         }
     }
