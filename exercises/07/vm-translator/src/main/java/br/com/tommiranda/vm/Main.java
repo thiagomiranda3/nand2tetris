@@ -23,7 +23,7 @@ public class Main {
         String fileName = FilenameUtils.getBaseName(path.toString());
         List<String> lines = Files.readAllLines(path);
 
-        try (FileWriter writer = new FileWriter(fileName + ".vm")) {
+        try (FileWriter writer = new FileWriter(fileName + ".asm")) {
             Iterator<String> it = lines.iterator();
             while (it.hasNext()) {
                 String line = it.next();

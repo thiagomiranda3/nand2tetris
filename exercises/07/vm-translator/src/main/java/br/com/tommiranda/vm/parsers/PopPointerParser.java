@@ -16,10 +16,10 @@ public class PopPointerParser implements Parser {
 
         String type = value.equals("0") ? "@THIS" : "@THAT";
 
-        return type + System.lineSeparator() +
+        return "@SP" + System.lineSeparator() +
                "AM=M-1" + System.lineSeparator() +
                "D=M" + System.lineSeparator() +
-               "@THAT" + System.lineSeparator() +
+               type + System.lineSeparator() +
                "M=D";
     }
 }
