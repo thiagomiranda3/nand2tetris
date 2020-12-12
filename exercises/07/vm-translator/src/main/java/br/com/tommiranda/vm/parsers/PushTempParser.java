@@ -1,31 +1,37 @@
 package br.com.tommiranda.vm.parsers;
 
+import org.apache.commons.text.TextStringBuilder;
+
 import java.util.List;
 
 public class PushTempParser implements Parser {
 
     @Override
-    public String parse(String fileName, List<String> tokens) {
+    public String parse(String fileName, List<String> tokens, int lineNumber) {
         String position = tokens.get(2);
 
-        if(position.equals("0")) {
-            return "@R5" + System.lineSeparator() +
-                   "D=M" + System.lineSeparator() +
-                   "@SP" + System.lineSeparator() +
-                   "AM=M+1" + System.lineSeparator() +
-                   "A=A-1" + System.lineSeparator() +
-                   "M=D";
+        TextStringBuilder builder = new TextStringBuilder();
+
+        if (position.equals("0")) {
+            return builder.appendln("@R5")
+                          .appendln("D=M")
+                          .appendln("@SP")
+                          .appendln("AM=M+1")
+                          .appendln("A=A-1")
+                          .append("M=D")
+                          .build();
         }
 
-        return "@5" + System.lineSeparator() +
-               "D=A" + System.lineSeparator() +
-               "@" + position + System.lineSeparator() +
-               "D=D+A" + System.lineSeparator() +
-               "A=D" + System.lineSeparator() +
-               "D=M" + System.lineSeparator() +
-               "@SP" + System.lineSeparator() +
-               "AM=M+1" + System.lineSeparator() +
-               "A=A-1" + System.lineSeparator() +
-               "M=D";
+        return builder.appendln("@5")
+                      .appendln("D=A")
+                      .appendln("@%s", position)
+                      .appendln("D=D+A")
+                      .appendln("A=D")
+                      .appendln("D=M")
+                      .appendln("@SP")
+                      .appendln("AM=M+1")
+                      .appendln("A=A-1")
+                      .append("M=D")
+                      .build();
     }
 }

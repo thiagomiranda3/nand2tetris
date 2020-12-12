@@ -1,18 +1,23 @@
 package br.com.tommiranda.vm.parsers;
 
+import org.apache.commons.text.TextStringBuilder;
+
 import java.util.List;
 
 public class PushStaticParser implements Parser {
 
     @Override
-    public String parse(String fileName, List<String> tokens) {
+    public String parse(String fileName, List<String> tokens, int lineNumber) {
         String position = tokens.get(2);
 
-        return "@" + fileName + "." + position + System.lineSeparator() +
-               "D=M" + System.lineSeparator() +
-               "@SP" + System.lineSeparator() +
-               "AM=M+1" + System.lineSeparator() +
-               "A=A-1" + System.lineSeparator() +
-               "M=D";
+        TextStringBuilder builder = new TextStringBuilder();
+
+        return builder.appendln("@%s.%s", fileName, position)
+                      .appendln("D=M")
+                      .appendln("@SP")
+                      .appendln("AM=M+1")
+                      .appendln("A=A-1")
+                      .append("M=D")
+                      .build();
     }
 }

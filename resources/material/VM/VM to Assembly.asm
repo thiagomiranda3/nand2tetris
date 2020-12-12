@@ -1,3 +1,63 @@
+// true = -1 e false = 0
+
+// eq
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D;
+@EQ_lineNumber
+D;JEQ
+@SP
+A=M-1
+M=0
+@END_lineNumber
+0;JMP
+(EQ_lineNumber)
+@SP
+A=M-1
+M=-1
+(END_lineNumber)
+
+// gt
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D;
+@EQ_lineNumber
+D;JGT
+@SP
+A=M-1
+M=0
+@END_lineNumber
+0;JMP
+(EQ_lineNumber)
+@SP
+A=M-1
+M=-1
+(END_lineNumber)
+
+// lt
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D;
+@EQ_lineNumber
+D;JLT
+@SP
+A=M-1
+M=0
+@END_lineNumber
+0;JMP
+(EQ_lineNumber)
+@SP
+A=M-1
+M=-1
+(END_lineNumber)
+
+
 // push temp 0
 @R5
 D=M

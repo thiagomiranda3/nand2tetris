@@ -1,27 +1,31 @@
 package br.com.tommiranda.vm.parsers;
 
 import br.com.tommiranda.vm.SegmentToAssemblyVar;
+import org.apache.commons.text.TextStringBuilder;
 
 import java.util.List;
 
 public class PopSegmentParser implements Parser {
 
     @Override
-    public String parse(String fileName, List<String> tokens) {
+    public String parse(String fileName, List<String> tokens, int lineNumber) {
         String segment = tokens.get(1);
         String position = tokens.get(2);
 
-        return SegmentToAssemblyVar.convertName(segment) + System.lineSeparator() +
-               "D=M" + System.lineSeparator() +
-               "@" + position + System.lineSeparator() +
-               "D=D+A" + System.lineSeparator() +
-               "@R13" + System.lineSeparator() +
-               "M=D" + System.lineSeparator() +
-               "@SP" + System.lineSeparator() +
-               "AM=M-1" + System.lineSeparator() +
-               "D=M" + System.lineSeparator() +
-               "@R13" + System.lineSeparator() +
-               "A=M" + System.lineSeparator() +
-               "M=D";
+        TextStringBuilder builder = new TextStringBuilder();
+
+        return builder.appendln(SegmentToAssemblyVar.convertName(segment))
+                      .appendln("D=M")
+                      .appendln("@%s", position)
+                      .appendln("D=D+A")
+                      .appendln("@R13")
+                      .appendln("M=D")
+                      .appendln("@SP")
+                      .appendln("AM=M-1")
+                      .appendln("D=M")
+                      .appendln("@R13")
+                      .appendln("A=M")
+                      .append("M=D")
+                      .build();
     }
 }

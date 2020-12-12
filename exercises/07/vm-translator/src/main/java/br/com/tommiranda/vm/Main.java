@@ -23,6 +23,7 @@ public class Main {
         String fileName = FilenameUtils.getBaseName(path.toString());
         List<String> lines = Files.readAllLines(path);
 
+        int lineNumber = 0;
         try (FileWriter writer = new FileWriter(fileName + ".asm")) {
             Iterator<String> it = lines.iterator();
             while (it.hasNext()) {
@@ -40,7 +41,9 @@ public class Main {
                 }
 
                 writer.write("// " + line + System.lineSeparator());
-                writer.write(parser.parse(fileName, tokens) + System.lineSeparator());
+                writer.write(parser.parse(fileName, tokens, lineNumber) + System.lineSeparator());
+
+                lineNumber++;
             }
         }
     }

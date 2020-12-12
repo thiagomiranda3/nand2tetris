@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Parser {
 
-    String parse(String fileName, List<String> tokens);
+    String parse(String fileName, List<String> tokens, int lineNumber);
 }
