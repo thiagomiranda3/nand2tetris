@@ -8,7 +8,7 @@ import java.util.List;
 public class PopPointerParser implements Parser {
 
     @Override
-    public String parse(String fileName, List<String> tokens, int lineNumber) {
+    public String parse(String fileName, List<String> tokens, int lineNumber, String functionName) {
         String value = tokens.get(2);
 
         if (!value.equals("0") && !value.equals("1")) {

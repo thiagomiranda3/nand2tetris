@@ -7,7 +7,7 @@ import java.util.List;
 public class PushStaticParser implements Parser {
 
     @Override
-    public String parse(String fileName, List<String> tokens, int lineNumber) {
+    public String parse(String fileName, List<String> tokens, int lineNumber, String functionName) {
         String position = tokens.get(2);
 
         TextStringBuilder builder = new TextStringBuilder();

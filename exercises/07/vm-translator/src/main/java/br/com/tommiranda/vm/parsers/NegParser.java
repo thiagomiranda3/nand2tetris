@@ -7,7 +7,7 @@ import java.util.List;
 public class NegParser implements Parser {
 
     @Override
-    public String parse(String fileName, List<String> tokens, int lineNumber) {
+    public String parse(String fileName, List<String> tokens, int lineNumber, String functionName) {
         TextStringBuilder builder = new TextStringBuilder();
 
         return builder.appendln("@SP")

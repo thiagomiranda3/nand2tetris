@@ -8,7 +8,7 @@ import java.util.List;
 public class PopSegmentParser implements Parser {
 
     @Override
-    public String parse(String fileName, List<String> tokens, int lineNumber) {
+    public String parse(String fileName, List<String> tokens, int lineNumber, String functionName) {
         String segment = tokens.get(1);
         String position = tokens.get(2);
 

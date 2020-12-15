@@ -39,6 +39,15 @@ public final class ParserMap {
         types.put("add", new AddParser());
         types.put("sub", new SubParser());
 
+        types.put("if-goto", new IfGotoParser());
+        types.put("label", new LabelParser());
+        types.put("goto", new GotoParser());
+
+        types.put("function", new FunctionParser());
+        types.put("call", new CallParser());
+        types.put("return", new ReturnParser());
+
+
         return types;
     }
 

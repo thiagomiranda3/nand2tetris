@@ -1,6 +1,7 @@
 package br.com.tommiranda.vm;
 
 import br.com.tommiranda.vm.errors.TranslationException;
+import br.com.tommiranda.vm.parsers.FunctionParser;
 import br.com.tommiranda.vm.parsers.Parser;
 import org.apache.commons.io.FilenameUtils;
 
@@ -26,6 +27,9 @@ public class Main {
         int lineNumber = 0;
         try (FileWriter writer = new FileWriter(fileName + ".asm")) {
             Iterator<String> it = lines.iterator();
+
+            String functionName = "";
+
             while (it.hasNext()) {
                 String line = it.next();
                 List<String> tokens = Tokenizer.tokenize(line);
@@ -40,8 +44,12 @@ public class Main {
                     throw new TranslationException("Not recognized tokens: " + line);
                 }
 
+                if (parser instanceof FunctionParser) {
+                    functionName = tokens.get(1);
+                }
+
                 writer.write("// " + line + System.lineSeparator());
-                writer.write(parser.parse(fileName, tokens, lineNumber) + System.lineSeparator());
+                writer.write(parser.parse(fileName, tokens, lineNumber, functionName) + System.lineSeparator());
 
                 lineNumber++;
             }
