@@ -13,13 +13,14 @@ public class FunctionParser implements Parser {
         functionName = tokens.get(1);
         int numArgs = Integer.parseInt(tokens.get(2));
 
-        builder.appendln("(%s.%s)", fileName, functionName);
+        builder.append("(%s)", functionName);
 
         for (int i = 0; i < numArgs; i++) {
-            builder.appendln("@SP")
+            builder.appendNewLine()
+                   .appendln("@SP")
                    .appendln("AM=M+1")
                    .appendln("A=A-1")
-                   .appendln("M=0");
+                   .append("M=0");
         }
 
         return builder.build();

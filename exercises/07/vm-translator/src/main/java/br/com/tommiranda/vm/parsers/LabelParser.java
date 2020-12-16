@@ -10,7 +10,7 @@ public class LabelParser implements Parser {
     public String parse(String fileName, List<String> tokens, int lineNumber, String functionName) {
         String label = tokens.get(1);
 
-        String labelName = fileName + ".";
+        String labelName = "";
 
         if(!functionName.isBlank()) {
             labelName += functionName + "$";
