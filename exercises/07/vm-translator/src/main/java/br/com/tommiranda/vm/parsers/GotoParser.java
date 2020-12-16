@@ -12,7 +12,7 @@ public class GotoParser implements Parser {
 
         String labelName = "";
 
-        if(!functionName.isBlank()) {
+        if (!functionName.isBlank()) {
             labelName += functionName + "$";
         }
 

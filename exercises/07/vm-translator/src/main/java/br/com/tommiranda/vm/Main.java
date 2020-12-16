@@ -25,7 +25,7 @@ public class Main {
         Path path = Paths.get(args[0]);
 
         List<String> assembly;
-        if(Files.isDirectory(path)) {
+        if (Files.isDirectory(path)) {
             assembly = translateVm(path, bootstrap());
         } else {
             assembly = translateFile(path);
@@ -46,10 +46,6 @@ public class Main {
         assembly.add(new CallParser().parse(null, Arrays.asList("call", "Sys.init", "0"), 0, null));
 
         return assembly;
-    }
-
-    private static List<String> translateVm(Path directory) throws IOException {
-        return translateVm(directory, bootstrap());
     }
 
     private static List<String> translateVm(Path directory, List<String> assembly) throws IOException {
