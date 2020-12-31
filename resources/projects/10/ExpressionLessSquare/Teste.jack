@@ -8,9 +8,10 @@ class Teste {
    field int size;
    
    constructor Teste new(int Ax, int Ay, int Asize) {
-      var int teste;
 
       let x = Ax;
+
+      var int teste;
    
       let teste = /* = */ 12345; // COMENTÁRIO
       return this;
