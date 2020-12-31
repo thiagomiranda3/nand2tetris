@@ -25,14 +25,12 @@ public class ClassParser implements Parser {
         if (!token.getType().equals(TokenType.IDENTIFIER)) {
             throw parseError(token, "Expected a class name");
         }
-
         children.add(new Node(NodeType.IDENTIFIER, token.getValue()));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("{")) {
             throw parseError(token, "Expected {");
         }
-
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
         token = tokens.get(0);
@@ -51,7 +49,6 @@ public class ClassParser implements Parser {
         if (!token.getValue().equals("}")) {
             throw parseError(token, "Expected }");
         }
-
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
         return new Node(NodeType.CLASS, children);

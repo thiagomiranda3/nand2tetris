@@ -21,28 +21,24 @@ public class SubroutineDecParser implements Parser {
         if (!token.getValue().equals("constructor") && !token.getValue().equals("function") && !token.getValue().equals("method")) {
             throw parseError(token, "Expected constructor, function or method");
         }
-
         children.add(new Node(NodeType.KEYWORD, token.getValue()));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("void") && !Elements.isType(token.getValue()) && !token.getType().equals(TokenType.IDENTIFIER)) {
             throw parseError(token, "Expected void, primitive type or class name");
         }
-
         children.add(new Node(NodeType.fromToken(token.getType()), token.getValue()));
 
         token = tokens.remove(0);
         if (!token.getType().equals(TokenType.IDENTIFIER)) {
             throw parseError(token, "Expected a type followed by a subroutine name");
         }
-
         children.add(new Node(NodeType.IDENTIFIER, token.getValue()));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("(")) {
             throw parseError(token, "Expected (");
         }
-
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
         token = tokens.remove(0);

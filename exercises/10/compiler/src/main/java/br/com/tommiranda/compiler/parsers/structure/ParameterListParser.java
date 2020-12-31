@@ -22,14 +22,12 @@ public class ParameterListParser implements Parser {
             if (!Elements.isType(token.getValue()) && !token.getType().equals(TokenType.IDENTIFIER)) {
                 throw parseError(token, "Expected primitive type or class name");
             }
-
             children.add(new Node(NodeType.fromToken(token.getType()), token.getValue()));
 
             token = tokens.remove(0);
             if (!token.getType().equals(TokenType.IDENTIFIER)) {
                 throw parseError(token, "Expected a type followed by a variable name");
             }
-
             children.add(new Node(NodeType.IDENTIFIER, token.getValue()));
 
             token = tokens.remove(0);

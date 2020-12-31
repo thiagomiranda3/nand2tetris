@@ -3,6 +3,7 @@ package br.com.tommiranda.compiler.parsers.structure;
 import br.com.tommiranda.compiler.ast.Node;
 import br.com.tommiranda.compiler.ast.NodeType;
 import br.com.tommiranda.compiler.parsers.Parser;
+import br.com.tommiranda.compiler.parsers.statements.StatementsParser;
 import br.com.tommiranda.compiler.tokenizer.Token;
 
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ public class SubroutineBodyParser implements Parser {
         if (!token.getValue().equals("{")) {
             throw parseError(token, "Expected {");
         }
-
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
         token = tokens.get(0);
@@ -26,12 +26,12 @@ public class SubroutineBodyParser implements Parser {
             children.add(new VarDecParser().parse(tokens));
             token = tokens.get(0);
         }
+        children.add(new StatementsParser().parse(tokens));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("}")) {
             throw parseError(token, "Expected }");
         }
-
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
         return new Node(NodeType.SUBROUTINE_BODY, children);

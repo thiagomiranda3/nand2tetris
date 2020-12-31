@@ -20,14 +20,12 @@ public class VarDecParser implements Parser {
         if (!token.getValue().equals("var")) {
             throw parseError(token, "Expected var");
         }
-
         children.add(new Node(NodeType.KEYWORD, token.getValue()));
 
         token = tokens.remove(0);
         if (!Elements.isType(token.getValue()) && !token.getType().equals(TokenType.IDENTIFIER)) {
             throw parseError(token, "Expected primitive type or class name");
         }
-
         children.add(new Node(NodeType.fromToken(token.getType()), token.getValue()));
 
         do {
@@ -35,7 +33,6 @@ public class VarDecParser implements Parser {
             if (!token.getType().equals(TokenType.IDENTIFIER)) {
                 throw parseError(token, "Expected a type followed by comma-separated variable names");
             }
-
             children.add(new Node(NodeType.IDENTIFIER, token.getValue()));
 
             token = tokens.remove(0);
@@ -47,6 +44,7 @@ public class VarDecParser implements Parser {
         if (!token.getValue().equals(";")) {
             throw parseError(token, "Expected , or ;");
         }
+        children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
         return new Node(NodeType.VAR_DEC, children);
     }
