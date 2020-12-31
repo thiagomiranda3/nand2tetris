@@ -1,0 +1,74 @@
+package br.com.tommiranda.compiler;
+
+import br.com.tommiranda.compiler.ast.Node;
+import br.com.tommiranda.compiler.parsers.structure.ClassParser;
+import br.com.tommiranda.compiler.tokenizer.Token;
+import br.com.tommiranda.compiler.tokenizer.Tokenizer;
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        if (args.length == 0) {
+            throw new IllegalStateException("No file or directory passed");
+        }
+
+        Path path = Paths.get(args[0]);
+
+        if (Files.isDirectory(path)) {
+            compileDir(path);
+        } else {
+            String extension = FilenameUtils.getExtension(path.toString());
+
+            if (!extension.equals("jack")) {
+                throw new IllegalStateException("Needs to receive a jack file as param");
+            }
+
+            compileFile(path);
+        }
+    }
+
+    private static void compileDir(Path directory) throws IOException {
+        try (Stream<Path> paths = Files.walk(directory, 1)) {
+            Iterator<Path> it = paths.iterator();
+
+            while (it.hasNext()) {
+                Path path = it.next();
+
+                if (path == directory) {
+                    continue;
+                }
+
+                if (Files.isDirectory(path)) {
+                    compileDir(path);
+                } else {
+                    String extension = FilenameUtils.getExtension(path.toString());
+
+                    if (!extension.equals("jack")) {
+                        continue;
+                    }
+
+                    compileFile(path);
+                }
+            }
+        }
+    }
+
+    private static void compileFile(Path path) throws IOException {
+        List<Token> tokens = new Tokenizer().tokenizeFile(path);
+
+        Node root = new ClassParser().parse(tokens);
+
+
+//        String fileName = FilenameUtils.getBaseName(path.toString());
+//        Files.write(Paths.get(fileName + ".xml"), assembly);
+    }
+}
