@@ -30,7 +30,7 @@ public class ClassParser implements Parser {
 
         token = tokens.remove(0);
         if (!token.getValue().equals("{")) {
-            throw parseError(token, " Expected {");
+            throw parseError(token, "Expected {");
         }
 
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
@@ -44,11 +44,12 @@ public class ClassParser implements Parser {
         token = tokens.get(0);
         while (token.getValue().equals("constructor") || token.getValue().equals("function") || token.getValue().equals("method")) {
             children.add(new SubroutineDecParser().parse(tokens));
+            token = tokens.get(0);
         }
 
         token = tokens.remove(0);
         if (!token.getValue().equals("}")) {
-            throw parseError(token, " Expected }");
+            throw parseError(token, "Expected }");
         }
 
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
