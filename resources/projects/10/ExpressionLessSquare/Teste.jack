@@ -4,7 +4,7 @@ Expressionless
         // aslkdjd
         // saçldk /* asd */
 class Teste {
-   field    int x, y; 
+   field int x, y;
    field int size;
    
    constructor Teste new(int Ax, int Ay, int Asize) {
@@ -12,7 +12,7 @@ class Teste {
 
       let x = Ax;
    
-      let teste /* = */ /* = */ = /* = */ 12345; // COMENTÁRIO
+      let teste = /* = */ 12345; // COMENTÁRIO
       return this;
    }
 }  

@@ -1,5 +1,7 @@
 package br.com.tommiranda.compiler.ast;
 
+import br.com.tommiranda.compiler.tokenizer.TokenType;
+
 public enum NodeType {
 
     // Lexical Elements
@@ -39,5 +41,15 @@ public enum NodeType {
 
     NodeType(String name) {
         this.name = name;
+    }
+
+    public static NodeType fromToken(TokenType type) {
+        return switch (type) {
+            case KEYWORD -> NodeType.KEYWORD;
+            case SYMBOL -> NodeType.SYMBOL;
+            case INTEGER -> NodeType.INTEGER_CONSTANT;
+            case STRING -> NodeType.STRING_CONSTANT;
+            case IDENTIFIER -> NodeType.IDENTIFIER;
+        };
     }
 }

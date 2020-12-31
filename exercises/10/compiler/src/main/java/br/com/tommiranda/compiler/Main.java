@@ -1,6 +1,7 @@
 package br.com.tommiranda.compiler;
 
 import br.com.tommiranda.compiler.ast.Node;
+import br.com.tommiranda.compiler.errors.SyntaxError;
 import br.com.tommiranda.compiler.parsers.structure.ClassParser;
 import br.com.tommiranda.compiler.tokenizer.Token;
 import br.com.tommiranda.compiler.tokenizer.Tokenizer;
@@ -63,12 +64,16 @@ public class Main {
     }
 
     private static void compileFile(Path path) throws IOException {
+        String fileName = FilenameUtils.getBaseName(path.toString());
+
         List<Token> tokens = new Tokenizer().tokenizeFile(path);
 
-        Node root = new ClassParser().parse(tokens);
+        try {
+            Node root = new ClassParser().parse(tokens);
 
-
-//        String fileName = FilenameUtils.getBaseName(path.toString());
-//        Files.write(Paths.get(fileName + ".xml"), assembly);
+            //        Files.write(Paths.get(fileName + ".xml"), assembly);
+        } catch (SyntaxError e) {
+            System.out.println("In " + fileName + ".jack " + e.getMessage());
+        }
     }
 }
