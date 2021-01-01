@@ -26,6 +26,7 @@ public class SubroutineBodyParser implements Parser {
             children.add(new VarDecParser().parse(tokens));
             token = tokens.get(0);
         }
+
         children.add(new StatementsParser().parse(tokens));
 
         token = tokens.remove(0);

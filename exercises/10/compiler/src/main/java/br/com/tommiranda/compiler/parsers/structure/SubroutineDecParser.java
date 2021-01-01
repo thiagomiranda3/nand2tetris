@@ -41,8 +41,9 @@ public class SubroutineDecParser implements Parser {
         }
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
-        token = tokens.remove(0);
+        token = tokens.get(0);
         if (token.getValue().equals(")")) {
+            token = tokens.remove(0);
             children.add(new Node(NodeType.PARAMETER_LIST, Collections.emptyList()));
             children.add(new Node(NodeType.SYMBOL, token.getValue()));
             children.add(new SubroutineBodyParser().parse(tokens));
@@ -52,11 +53,12 @@ public class SubroutineDecParser implements Parser {
 
         children.add(new ParameterListParser().parse(tokens));
 
+        token = tokens.remove(0);
         if (!token.getValue().equals(")")) {
             throw parseError(token, "Expected ) or , in parameters list");
         }
-
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
+
         children.add(new SubroutineBodyParser().parse(tokens));
 
         return new Node(NodeType.SUBROUTINE_DEC, children);

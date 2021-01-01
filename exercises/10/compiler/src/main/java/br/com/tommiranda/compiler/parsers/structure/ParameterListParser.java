@@ -30,8 +30,9 @@ public class ParameterListParser implements Parser {
             }
             children.add(new Node(NodeType.IDENTIFIER, token.getValue()));
 
-            token = tokens.remove(0);
+            token = tokens.get(0);
             if (token.getValue().equals(",")) {
+                token = tokens.remove(0);
                 children.add(new Node(NodeType.SYMBOL, token.getValue()));
             }
         } while (token.getValue().equals(","));

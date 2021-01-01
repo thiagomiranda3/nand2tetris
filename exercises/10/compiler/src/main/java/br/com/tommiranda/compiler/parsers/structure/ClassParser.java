@@ -11,7 +11,6 @@ import java.util.List;
 
 public class ClassParser implements Parser {
 
-    // class Teste { }
     @Override
     public Node parse(List<Token> tokens) {
         List<Node> children = new ArrayList<>();

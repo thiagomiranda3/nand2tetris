@@ -24,6 +24,8 @@ public class StatementsParser implements Parser {
                 case "return" -> children.add(new ReturnStatementParser().parse(tokens));
                 default -> throw parseError(token, "Expected statement(do, let, while, return or if)");
             }
+
+            token = tokens.get(0);
         }
 
         return new Node(NodeType.STATEMENTS, children);
