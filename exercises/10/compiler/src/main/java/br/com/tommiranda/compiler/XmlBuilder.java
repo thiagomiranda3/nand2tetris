@@ -2,6 +2,7 @@ package br.com.tommiranda.compiler;
 
 import br.com.tommiranda.compiler.ast.Node;
 import br.com.tommiranda.compiler.ast.NodeType;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.text.TextStringBuilder;
 
 public final class XmlBuilder {
@@ -13,7 +14,11 @@ public final class XmlBuilder {
         TextStringBuilder builder = new TextStringBuilder();
 
         if (value != null) {
-            return String.format("%s<%s> %s </%s>", "  ".repeat(level), type, value, type);
+            if(type.equals(NodeType.STRING_CONSTANT)) {
+                value = value.substring(1, value.length() - 1);
+            }
+
+            return String.format("%s<%s> %s </%s>", "  ".repeat(level), type, StringEscapeUtils.escapeXml11(value), type);
         }
 
         builder.appendln("%s<%s>", "  ".repeat(level), type);

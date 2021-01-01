@@ -8,7 +8,7 @@ public enum NodeType {
     KEYWORD("keyword"),
     SYMBOL("symbol"),
     INTEGER_CONSTANT("integerConstant"),
-    STRING_CONSTANT("StringConstant"),
+    STRING_CONSTANT("stringConstant"),
     IDENTIFIER("identifier"),
 
     // Program Structure
