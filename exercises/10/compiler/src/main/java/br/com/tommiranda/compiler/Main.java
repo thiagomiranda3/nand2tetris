@@ -72,7 +72,7 @@ public class Main {
         try {
             Node root = new ClassParser().parse(tokens);
 
-            System.out.println(new Gson().toJson(root));
+            System.out.println(XmlBuilder.create(root, 0));
 
             //        Files.write(Paths.get(fileName + ".xml"), assembly);
         } catch (SyntaxError e) {

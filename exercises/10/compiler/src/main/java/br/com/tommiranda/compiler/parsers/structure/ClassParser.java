@@ -19,6 +19,7 @@ public class ClassParser implements Parser {
         if (!token.getValue().equals("class")) {
             throw parseError(token, "Expected 'class'");
         }
+        children.add(new Node(NodeType.KEYWORD, token.getValue()));
 
         token = tokens.remove(0);
         if (!token.getType().equals(TokenType.IDENTIFIER)) {

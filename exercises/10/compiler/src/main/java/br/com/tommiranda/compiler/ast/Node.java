@@ -1,12 +1,13 @@
 package br.com.tommiranda.compiler.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class Node {
 
     private final NodeType type;
     private String value;
-    private List<Node> children;
+    private List<Node> children = new ArrayList<>();
 
     public Node(NodeType type, List<Node> children) {
         this.type = type;

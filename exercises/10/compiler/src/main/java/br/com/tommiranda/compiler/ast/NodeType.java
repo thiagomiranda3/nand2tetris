@@ -23,10 +23,10 @@ public enum NodeType {
     // Statements
     STATEMENTS("statements"),
     LET_STATEMENT("letStatement"),
-    IF_STATEMENT("idStatement"),
+    IF_STATEMENT("ifStatement"),
     WHILE_STATEMENT("whileStatement"),
     DO_STATEMENT("doStatement"),
-    RETURN_STATEMENT("ReturnStatement"),
+    RETURN_STATEMENT("returnStatement"),
 
     // Expressions
     EXPRESSION("expression"),
@@ -40,6 +40,15 @@ public enum NodeType {
 
     NodeType(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     public static NodeType fromToken(TokenType type) {

@@ -8,6 +8,7 @@ import br.com.tommiranda.compiler.tokenizer.Token;
 import br.com.tommiranda.compiler.tokenizer.TokenType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TermParser implements Parser {
@@ -61,7 +62,12 @@ public class TermParser implements Parser {
                 }
                 children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
-                children.add(new ExpressionListParser().parse(tokens));
+                token = tokens.get(0);
+                if (!token.getValue().equals(")")) {
+                    children.add(new ExpressionListParser().parse(tokens));
+                } else {
+                    children.add(new Node(NodeType.EXPRESSION_LIST, Collections.emptyList()));
+                }
 
                 token = tokens.remove(0);
                 if (!token.getValue().equals(")")) {
