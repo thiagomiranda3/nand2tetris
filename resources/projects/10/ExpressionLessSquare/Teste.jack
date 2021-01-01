@@ -11,6 +11,8 @@ class Teste {
       var int teste, teste2;
 
       let x = Ax;
+
+      do Output.printString("TESTE");
    
       let teste = /* = */ 12345; // COMENTÁRIO
       return this;
