@@ -34,6 +34,40 @@ public class TermParser implements Parser {
                     throw parseError(token, "Expected ]");
                 }
                 children.add(new Node(NodeType.SYMBOL, token.getValue()));
+            } else if(token.getValue().equals("(")) {
+                token = tokens.remove(0);
+                children.add(new Node(NodeType.SYMBOL, token.getValue()));
+
+                children.add(new ExpressionListParser().parse(tokens));
+
+                token = tokens.remove(0);
+                if (!token.getValue().equals(")")) {
+                    throw parseError(token, "Expected )");
+                }
+                children.add(new Node(NodeType.SYMBOL, token.getValue()));
+            } else if(token.getValue().equals(".")) {
+                token = tokens.remove(0);
+                children.add(new Node(NodeType.SYMBOL, token.getValue()));
+
+                token = tokens.remove(0);
+                if(!token.getType().equals(TokenType.IDENTIFIER)) {
+                    throw parseError(token, "Expected subroutine name");
+                }
+                children.add(new Node(NodeType.IDENTIFIER, token.getValue()));
+
+                token = tokens.remove(0);
+                if (!token.getValue().equals("(")) {
+                    throw parseError(token, "Expected (");
+                }
+                children.add(new Node(NodeType.SYMBOL, token.getValue()));
+
+                children.add(new ExpressionListParser().parse(tokens));
+
+                token = tokens.remove(0);
+                if (!token.getValue().equals(")")) {
+                    throw parseError(token, "Expected )");
+                }
+                children.add(new Node(NodeType.SYMBOL, token.getValue()));
             }
         } else if (token.getValue().equals("(")) {
             children.add(new Node(NodeType.SYMBOL, token.getValue()));
@@ -49,8 +83,10 @@ public class TermParser implements Parser {
             children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
             children.add(new TermParser().parse(tokens));
+        } else if(token.getType().equals(TokenType.KEYWORD)) {
+            throw parseError(token, "Illegal keyword in term");
         } else {
-            children.add(new SubroutineCallParser().parse(tokens));
+            throw parseError(token, "Invalid Expression");
         }
 
         return new Node(NodeType.TERM, children);

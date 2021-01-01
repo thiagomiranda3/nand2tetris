@@ -31,7 +31,6 @@ public enum NodeType {
     // Expressions
     EXPRESSION("expression"),
     TERM("term"),
-    SUBROUTINE_CALL("subroutineCall"),
     EXPRESSION_LIST("expressionList"),
     OP("op"),
     UNARY_OP("unaryOp"),

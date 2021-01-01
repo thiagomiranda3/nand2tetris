@@ -12,7 +12,7 @@ class Teste {
 
       let x = Ax;
    
-      var teste = /* = */ 12345; // COMENTÁRIO
+      let teste = /* = */ 12345; // COMENTÁRIO
       return this;
    }
 }  

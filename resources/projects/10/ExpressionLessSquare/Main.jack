@@ -22,7 +22,7 @@ class Main {
         var String s;
         var Array a;
         if (i) {
-            let s = i;
+            let s = +;
             let s = j;
             let a[i] = j;
         }
