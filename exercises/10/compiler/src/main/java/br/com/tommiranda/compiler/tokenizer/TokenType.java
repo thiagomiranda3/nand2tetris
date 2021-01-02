@@ -19,7 +19,7 @@ public enum TokenType {
             return INTEGER;
         }
 
-        if(value.startsWith("\"")) {
+        if (value.startsWith("\"")) {
             return STRING;
         }
 

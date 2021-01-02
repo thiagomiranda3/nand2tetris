@@ -42,15 +42,6 @@ public enum NodeType {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
     public static NodeType fromToken(TokenType type) {
         return switch (type) {
             case KEYWORD -> NodeType.KEYWORD;
@@ -59,5 +50,14 @@ public enum NodeType {
             case STRING -> NodeType.STRING_CONSTANT;
             case IDENTIFIER -> NodeType.IDENTIFIER;
         };
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

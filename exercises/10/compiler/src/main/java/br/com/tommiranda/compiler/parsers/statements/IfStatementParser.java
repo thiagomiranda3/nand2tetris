@@ -13,7 +13,7 @@ public class IfStatementParser implements Parser {
 
     @Override
     public Node parse(List<Token> tokens) {
-        List<Node> children = new ArrayList<>();
+        var children = new ArrayList<Node>();
 
         Token token = tokens.remove(0);
         if (!token.getValue().equals("if")) {
@@ -50,7 +50,7 @@ public class IfStatementParser implements Parser {
         children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
         token = tokens.get(0);
-        if(token.getValue().equals("else")) {
+        if (token.getValue().equals("else")) {
             token = tokens.remove(0);
             children.add(new Node(NodeType.KEYWORD, token.getValue()));
 

@@ -14,7 +14,7 @@ public class ParameterListParser implements Parser {
 
     @Override
     public Node parse(List<Token> tokens) {
-        List<Node> children = new ArrayList<>();
+        var children = new ArrayList<Node>();
 
         Token token;
         do {

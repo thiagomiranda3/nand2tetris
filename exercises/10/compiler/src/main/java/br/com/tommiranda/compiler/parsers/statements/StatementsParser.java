@@ -12,10 +12,10 @@ public class StatementsParser implements Parser {
 
     @Override
     public Node parse(List<Token> tokens) {
-        List<Node> children = new ArrayList<>();
+        var children = new ArrayList<Node>();
 
         Token token = tokens.get(0);
-        while(!token.getValue().equals("}")) {
+        while (!token.getValue().equals("}")) {
             switch (token.getValue()) {
                 case "let" -> children.add(new LetStatementParser().parse(tokens));
                 case "if" -> children.add(new IfStatementParser().parse(tokens));

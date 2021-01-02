@@ -15,7 +15,7 @@ public class TermParser implements Parser {
 
     @Override
     public Node parse(List<Token> tokens) {
-        List<Node> children = new ArrayList<>();
+        var children = new ArrayList<Node>();
 
         Token token = tokens.remove(0);
         if (token.getType().equals(TokenType.INTEGER) || token.getType().equals(TokenType.STRING) || Elements.isConstant(token.getValue())) {
@@ -35,7 +35,7 @@ public class TermParser implements Parser {
                     throw parseError(token, "Expected ]");
                 }
                 children.add(new Node(NodeType.SYMBOL, token.getValue()));
-            } else if(token.getValue().equals("(")) {
+            } else if (token.getValue().equals("(")) {
                 token = tokens.remove(0);
                 children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
@@ -46,12 +46,12 @@ public class TermParser implements Parser {
                     throw parseError(token, "Expected )");
                 }
                 children.add(new Node(NodeType.SYMBOL, token.getValue()));
-            } else if(token.getValue().equals(".")) {
+            } else if (token.getValue().equals(".")) {
                 token = tokens.remove(0);
                 children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
                 token = tokens.remove(0);
-                if(!token.getType().equals(TokenType.IDENTIFIER)) {
+                if (!token.getType().equals(TokenType.IDENTIFIER)) {
                     throw parseError(token, "Expected subroutine name");
                 }
                 children.add(new Node(NodeType.IDENTIFIER, token.getValue()));
@@ -89,7 +89,7 @@ public class TermParser implements Parser {
             children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
             children.add(new TermParser().parse(tokens));
-        } else if(token.getType().equals(TokenType.KEYWORD)) {
+        } else if (token.getType().equals(TokenType.KEYWORD)) {
             throw parseError(token, "Illegal keyword in term");
         } else {
             throw parseError(token, "Invalid Expression");

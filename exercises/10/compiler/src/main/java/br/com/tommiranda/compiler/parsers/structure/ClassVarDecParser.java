@@ -14,7 +14,7 @@ public class ClassVarDecParser implements Parser {
 
     @Override
     public Node parse(List<Token> tokens) {
-        List<Node> children = new ArrayList<>();
+        var children = new ArrayList<Node>();
 
         Token token = tokens.remove(0);
         if (!token.getValue().equals("field") && !token.getValue().equals("static")) {
@@ -47,7 +47,7 @@ public class ClassVarDecParser implements Parser {
             token = tokens.remove(0);
         }
 
-        if(!token.getValue().equals(";")) {
+        if (!token.getValue().equals(";")) {
             throw parseError(token, "Expected , or ;");
         }
         children.add(new Node(NodeType.SYMBOL, token.getValue()));

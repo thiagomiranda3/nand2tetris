@@ -14,7 +14,7 @@ public final class XmlBuilder {
         TextStringBuilder builder = new TextStringBuilder();
 
         if (value != null) {
-            if(type.equals(NodeType.STRING_CONSTANT)) {
+            if (type.equals(NodeType.STRING_CONSTANT)) {
                 value = value.substring(1, value.length() - 1);
             }
 

@@ -13,7 +13,7 @@ public class ExpressionParser implements Parser {
 
     @Override
     public Node parse(List<Token> tokens) {
-        List<Node> children = new ArrayList<>();
+        var children = new ArrayList<Node>();
 
         children.add(new TermParser().parse(tokens));
 

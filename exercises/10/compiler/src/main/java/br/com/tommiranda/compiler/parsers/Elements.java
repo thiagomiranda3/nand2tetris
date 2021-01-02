@@ -13,7 +13,7 @@ public class Elements {
     private static final Set<String> constants = createConstants();
 
     private static Set<String> createKeywords() {
-        Set<String> keywords = new HashSet<>();
+        var keywords = new HashSet<String>();
 
         keywords.add("class");
         keywords.add("constructor");
@@ -41,7 +41,7 @@ public class Elements {
     }
 
     private static Set<String> createTypes() {
-        Set<String> types = new HashSet<>();
+        var types = new HashSet<String>();
 
         types.add("int");
         types.add("char");
@@ -51,7 +51,7 @@ public class Elements {
     }
 
     private static Set<String> createSymbols() {
-        Set<String> symbols = new HashSet<>();
+        var symbols = new HashSet<String>();
 
         symbols.add("{");
         symbols.add("}");
@@ -77,7 +77,7 @@ public class Elements {
     }
 
     private static Set<String> createOps() {
-        Set<String> ops = new HashSet<>();
+        var ops = new HashSet<String>();
 
         ops.add("+");
         ops.add("-");
@@ -93,7 +93,7 @@ public class Elements {
     }
 
     private static Set<String> createUnaryOps() {
-        Set<String> unaryOps = new HashSet<>();
+        var unaryOps = new HashSet<String>();
 
         unaryOps.add("-");
         unaryOps.add("~");
@@ -102,7 +102,7 @@ public class Elements {
     }
 
     private static Set<String> createConstants() {
-        Set<String> constants = new HashSet<>();
+        var constants = new HashSet<String>();
 
         constants.add("true");
         constants.add("false");

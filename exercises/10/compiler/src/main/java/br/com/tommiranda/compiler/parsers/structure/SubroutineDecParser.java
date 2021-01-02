@@ -15,7 +15,7 @@ public class SubroutineDecParser implements Parser {
 
     @Override
     public Node parse(List<Token> tokens) {
-        List<Node> children = new ArrayList<>();
+        var children = new ArrayList<Node>();
 
         Token token = tokens.remove(0);
         if (!token.getValue().equals("constructor") && !token.getValue().equals("function") && !token.getValue().equals("method")) {

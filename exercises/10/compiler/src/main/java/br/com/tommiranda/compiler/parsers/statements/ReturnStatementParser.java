@@ -13,7 +13,7 @@ public class ReturnStatementParser implements Parser {
 
     @Override
     public Node parse(List<Token> tokens) {
-        List<Node> children = new ArrayList<>();
+        var children = new ArrayList<Node>();
 
         Token token = tokens.remove(0);
         if (!token.getValue().equals("return")) {
@@ -22,7 +22,7 @@ public class ReturnStatementParser implements Parser {
         children.add(new Node(NodeType.KEYWORD, token.getValue()));
 
         token = tokens.get(0);
-        if(token.getValue().equals(";")) {
+        if (token.getValue().equals(";")) {
             token = tokens.remove(0);
             children.add(new Node(NodeType.SYMBOL, token.getValue()));
 
