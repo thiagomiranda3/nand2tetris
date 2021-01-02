@@ -5,7 +5,6 @@ import br.com.tommiranda.compiler.errors.SyntaxError;
 import br.com.tommiranda.compiler.parsers.structure.ClassParser;
 import br.com.tommiranda.compiler.tokenizer.Token;
 import br.com.tommiranda.compiler.tokenizer.Tokenizer;
-import com.google.gson.Gson;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
