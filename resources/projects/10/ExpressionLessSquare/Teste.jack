@@ -1,20 +1,13 @@
 /**       * /
 Expressionless
         version of projects/10/Square/Square.jack. */
-        // aslkdjd
+        // aslkdjd 
         // saçldk /* asd */
 class Teste {
-   field int x, y;
-   field int size;
    
-   constructor Teste new(int Ax, int Ay, int Asize) {
-      var int teste, teste2;
-
-      let x = Ax;
-
-      do Output.printString("TESTE");
+   constructor Teste new() {
    
-      let teste = /* = */ 12345; // COMENTÁRIO
+      let teste = /* tre*/ /* /** = ***/  /* =dasd */ 12345 /* dasda= */; // COMENTÁRIO
       return this;
    }
 }  

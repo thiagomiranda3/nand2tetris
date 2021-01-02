@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Tokenizer {
 
@@ -53,10 +54,14 @@ public class Tokenizer {
 
         boolean insideComment = false;
 
+        Pattern noComment = Pattern.compile("(/\\*.*?\\*/)|(//.*)");
+
         for (String line : lines) {
             lineNumber++;
 
-            line = line.trim();
+            line = noComment.matcher(line)
+                            .replaceAll("")
+                            .trim();
 
             if (insideComment) {
                 int endMultiline = line.indexOf("*/");
@@ -70,17 +75,8 @@ public class Tokenizer {
 
             int iniMultiline = line.indexOf("/*");
             if (iniMultiline >= 0) {
-                String newLine = line.substring(0, iniMultiline);
-
-                int endMultiline = line.indexOf("*/");
-                if (endMultiline == -1) {
-                    insideComment = true;
-                    continue;
-                }
-
-                newLine += line.substring(endMultiline + 2);
-                line = newLine;
-                insideComment = false;
+                line = line.substring(0, iniMultiline);
+                insideComment = true;
             }
 
             if (line.isBlank()) {
@@ -124,8 +120,6 @@ public class Tokenizer {
                     newTokens.add(createToken(tokenAcc.toString()));
                     tokenAcc = new StringBuilder();
                 }
-            } else if (isSingleComment(expr, i)) {
-                break;
             } else if (delimiters.containsKey(c)) {
                 brackets.add(c);
                 if (!tokenAcc.isEmpty()) {
@@ -169,13 +163,5 @@ public class Tokenizer {
 
     private Token createToken(String value) {
         return new Token(value, lineNumber, TokenType.getType(value));
-    }
-
-    private boolean isSingleComment(String expr, int idx) {
-        if (expr.length() <= idx + 1) {
-            return false;
-        }
-
-        return expr.charAt(idx) == '/' && expr.charAt(idx + 1) == '/';
     }
 }
