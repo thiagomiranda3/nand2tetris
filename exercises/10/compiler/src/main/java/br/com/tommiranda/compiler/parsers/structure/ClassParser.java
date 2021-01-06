@@ -19,19 +19,19 @@ public class ClassParser implements Parser {
         if (!token.getValue().equals("class")) {
             throw parseError(token, "Expected 'class'");
         }
-        children.add(new Node(NodeType.KEYWORD, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.remove(0);
         if (!token.getType().equals(TokenType.IDENTIFIER)) {
             throw parseError(token, "Expected a class name");
         }
-        children.add(new Node(NodeType.IDENTIFIER, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("{")) {
             throw parseError(token, "Expected {");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.get(0);
         while (token.getValue().equals("field") || token.getValue().equals("static")) {
@@ -49,7 +49,7 @@ public class ClassParser implements Parser {
         if (!token.getValue().equals("}")) {
             throw parseError(token, "Expected }");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         return new Node(NodeType.CLASS, children);
     }

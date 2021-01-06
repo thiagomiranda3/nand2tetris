@@ -14,7 +14,6 @@ public enum NodeType {
     // Program Structure
     CLASS("class"),
     CLASS_VAR_DEC("classVarDec"),
-    TYPE("type"),
     SUBROUTINE_DEC("subroutineDec"),
     PARAMETER_LIST("parameterList"),
     SUBROUTINE_BODY("subroutineBody"),
@@ -31,10 +30,7 @@ public enum NodeType {
     // Expressions
     EXPRESSION("expression"),
     TERM("term"),
-    EXPRESSION_LIST("expressionList"),
-    OP("op"),
-    UNARY_OP("unaryOp"),
-    KEYWORD_CONSTANT("KeywordConstant");
+    EXPRESSION_LIST("expressionList");
 
     private String name;
 

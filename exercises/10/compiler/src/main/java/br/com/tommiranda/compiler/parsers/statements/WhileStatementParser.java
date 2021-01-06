@@ -19,13 +19,13 @@ public class WhileStatementParser implements Parser {
         if (!token.getValue().equals("while")) {
             throw parseError(token, "Expected while");
         }
-        children.add(new Node(NodeType.KEYWORD, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("(")) {
             throw parseError(token, "Expected (");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         children.add(new ExpressionParser().parse(tokens));
 
@@ -33,13 +33,13 @@ public class WhileStatementParser implements Parser {
         if (!token.getValue().equals(")")) {
             throw parseError(token, "Expected )");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("{")) {
             throw parseError(token, "Expected {");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         children.add(new StatementsParser().parse(tokens));
 
@@ -47,7 +47,7 @@ public class WhileStatementParser implements Parser {
         if (!token.getValue().equals("}")) {
             throw parseError(token, "Expected }");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         return new Node(NodeType.WHILE_STATEMENT, children);
     }

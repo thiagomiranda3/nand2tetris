@@ -5,6 +5,8 @@ import br.com.tommiranda.compiler.errors.SyntaxError;
 import br.com.tommiranda.compiler.parsers.structure.ClassParser;
 import br.com.tommiranda.compiler.tokenizer.Token;
 import br.com.tommiranda.compiler.tokenizer.Tokenizer;
+import br.com.tommiranda.compiler.vm.VmWriter;
+import com.google.gson.Gson;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
@@ -71,7 +73,9 @@ public class Main {
         try {
             Node root = new ClassParser().parse(tokens);
 
-            System.out.println(XmlBuilder.create(root, 0));
+            System.out.println(new Gson().toJson(root));
+
+            new VmWriter().write(root);
 
             //        Files.write(Paths.get(fileName + ".xml"), assembly);
         } catch (SyntaxError e) {

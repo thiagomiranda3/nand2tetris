@@ -19,7 +19,7 @@ public class ExpressionListParser implements Parser {
         Token token = tokens.get(0);
         while (token.getValue().equals(",")) {
             token = tokens.remove(0);
-            children.add(new Node(NodeType.SYMBOL, token.getValue()));
+            children.add(new Node(token));
 
             children.add(new ExpressionParser().parse(tokens));
 

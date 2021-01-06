@@ -20,7 +20,7 @@ public class ExpressionParser implements Parser {
         Token token = tokens.get(0);
         while (Elements.isOp(token.getValue())) {
             token = tokens.remove(0);
-            children.add(new Node(NodeType.SYMBOL, token.getValue()));
+            children.add(new Node(token));
 
             children.add(new TermParser().parse(tokens));
 

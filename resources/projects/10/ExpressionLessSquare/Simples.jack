@@ -1,0 +1,13 @@
+class Simples {
+   field int x, y;
+   
+   constructor Simples new(int Ax, int Ay) {
+      var int size;
+
+      let x = Ax;
+      let y = Ay;
+      let size = x * y;
+
+      return this;
+   }
+}  

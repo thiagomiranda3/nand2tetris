@@ -7,12 +7,25 @@ class Teste {
    field int x, y;
    field int size;
    
-   constructor Teste new(int Ax, int Ay, int Asize) {
-      var int teste, teste2;
+   constructor Teste new(int Ax) {
+      var int teste;
 
       let x = Ax;
 
+      let teste = teste(2, 2, 3);
+
       do Output.printString("TESTE");
+   
+      let teste = /* tre*/ /* /** = ***/  /* =dasd */ 12345 /* dasda= */; // COMENTÁRIO
+      return this;
+   }
+
+   method Teste teste(int Ax, int Ay, int Asize) {
+      var int teste, teste2, teste, teste;
+
+      let x = Ax;
+
+      do Output.printString(2);
    
       let teste = /* tre*/ /* /** = ***/  /* =dasd */ 12345 /* dasda= */; // COMENTÁRIO
       return this;

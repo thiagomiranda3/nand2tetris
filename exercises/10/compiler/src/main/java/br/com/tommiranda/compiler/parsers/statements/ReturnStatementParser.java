@@ -19,12 +19,12 @@ public class ReturnStatementParser implements Parser {
         if (!token.getValue().equals("return")) {
             throw parseError(token, "Expected return");
         }
-        children.add(new Node(NodeType.KEYWORD, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.get(0);
         if (token.getValue().equals(";")) {
             token = tokens.remove(0);
-            children.add(new Node(NodeType.SYMBOL, token.getValue()));
+            children.add(new Node(token));
 
             return new Node(NodeType.RETURN_STATEMENT, children);
         }
@@ -35,7 +35,7 @@ public class ReturnStatementParser implements Parser {
         if (!token.getValue().equals(";")) {
             throw parseError(token, "Expected ;");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         return new Node(NodeType.RETURN_STATEMENT, children);
     }

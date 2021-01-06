@@ -19,13 +19,13 @@ public class IfStatementParser implements Parser {
         if (!token.getValue().equals("if")) {
             throw parseError(token, "Expected if");
         }
-        children.add(new Node(NodeType.KEYWORD, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("(")) {
             throw parseError(token, "Expected (");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         children.add(new ExpressionParser().parse(tokens));
 
@@ -33,13 +33,13 @@ public class IfStatementParser implements Parser {
         if (!token.getValue().equals(")")) {
             throw parseError(token, "Expected )");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.remove(0);
         if (!token.getValue().equals("{")) {
             throw parseError(token, "Expected {");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         children.add(new StatementsParser().parse(tokens));
 
@@ -47,18 +47,18 @@ public class IfStatementParser implements Parser {
         if (!token.getValue().equals("}")) {
             throw parseError(token, "Expected }");
         }
-        children.add(new Node(NodeType.SYMBOL, token.getValue()));
+        children.add(new Node(token));
 
         token = tokens.get(0);
         if (token.getValue().equals("else")) {
             token = tokens.remove(0);
-            children.add(new Node(NodeType.KEYWORD, token.getValue()));
+            children.add(new Node(token));
 
             token = tokens.remove(0);
             if (!token.getValue().equals("{")) {
                 throw parseError(token, "Expected {");
             }
-            children.add(new Node(NodeType.SYMBOL, token.getValue()));
+            children.add(new Node(token));
 
             children.add(new StatementsParser().parse(tokens));
 
@@ -66,7 +66,7 @@ public class IfStatementParser implements Parser {
             if (!token.getValue().equals("}")) {
                 throw parseError(token, "Expected }");
             }
-            children.add(new Node(NodeType.SYMBOL, token.getValue()));
+            children.add(new Node(token));
         }
 
         return new Node(NodeType.IF_STATEMENT, children);
