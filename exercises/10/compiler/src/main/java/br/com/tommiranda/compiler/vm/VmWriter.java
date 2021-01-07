@@ -215,14 +215,32 @@ public class VmWriter {
     private List<String> expression(Node node) {
         List<Node> children = node.getChildren();
 
+        String op = "";
         List<String> vm_code = new ArrayList<>();
 
         for (Node child : children) {
-            if(child.getType().equals(NodeType.TERM)) {
-                vm_code.addAll(term(children.get(0)));
+            if (child.getType().equals(NodeType.TERM)) {
+                vm_code.addAll(term(child));
+
+                if (!op.isBlank()) {
+                    vm_code.add(op);
+                    op = "";
+                }
             } else if (child.getType().equals(NodeType.SYMBOL)) {
-                vm_code.add(SymbolToVM.convert(child.getValue()));
+                op = SymbolToVM.convert(child.getValue());
             }
+        }
+
+        return vm_code;
+    }
+
+    private List<String> expressionList(Node node) {
+        List<Node> children = node.getChildren();
+
+        List<String> vm_code = new ArrayList<>();
+
+        for (Node child : children) {
+            vm_code.addAll(expression(child));
         }
 
         return vm_code;
@@ -257,33 +275,60 @@ public class VmWriter {
                 }
 
                 vm_code.add("push " + symbolAttribute.getKind().getName() + " " + symbolAttribute.getIndex());
-            } else if(child.getValue().equals("false")) {
+            } else if (child.getValue().equals("false")) {
                 vm_code.add("push constant 0");
-            } else if(child.getValue().equals("true")) {
+            } else if (child.getValue().equals("true")) {
                 vm_code.add("push constant 0");
                 vm_code.add("not");
             }
         } else {
-            if(child.getValue().equals("-")) {
-                term(children.get(1));
+            if (child.getValue().equals("-")) {
+                vm_code.addAll(term(children.get(1)));
                 vm_code.add("neg");
-            } else if(child.getValue().equals("~")) {
-                term(children.get(1));
+            } else if (child.getValue().equals("~")) {
+                vm_code.addAll(term(children.get(1)));
                 vm_code.add("not");
-            } else if(child.getValue().equals("(")) {
-                expression(children.get(1));
-            } else if(child.getType().equals(NodeType.IDENTIFIER)) {
+            } else if (child.getValue().equals("(")) {
+                vm_code.addAll(expression(children.get(1)));
+            } else if (child.getType().equals(NodeType.IDENTIFIER)) {
                 String variable = child.getValue();
                 SymbolAttribute symbolAttribute = SymbolTable.getSymbol(variable);
-                if (symbolAttribute == null) {
-                    throw parseError(children.get(1), variable + " undefined");
-                }
 
-                
+                if (children.get(1).getValue().equals(".")) {
+                    String subroutineName = children.get(2).getValue();
+
+                    long numParameters = countParameters(children, 4);
+                    vm_code.addAll(expressionList(children.get(4)));
+
+                    if (symbolAttribute != null) {
+                        vm_code.add("call " + symbolAttribute.getType() + "." + " " + numParameters);
+                    } else {
+                        vm_code.add("call " + variable + "." + subroutineName + " " + numParameters);
+                    }
+                } else if (children.get(1).getValue().equals("(")) {
+                    String subroutineName = child.getValue();
+
+                    if (!SymbolTable.containsSubroutine(subroutineName)) {
+                        throw parseError(child, "Method " + SymbolTable.getClassName() + "." + subroutineName + " doesn't exist");
+                    }
+
+                    vm_code.addAll(expressionList(children.get(2)));
+                    long numParameters = countParameters(children, 2);
+
+                    vm_code.add("call " + SymbolTable.getClassName() + "." + subroutineName + " " + numParameters);
+                }
             }
         }
 
         return vm_code;
+    }
+
+    private long countParameters(List<Node> children, int index) {
+        return children.get(index)
+                       .getChildren()
+                       .stream()
+                       .filter(e -> e.getType().equals(NodeType.EXPRESSION))
+                       .count();
     }
 
     SyntaxError parseError(Node node, String message) {

@@ -5,6 +5,16 @@ Expressionless
         // saçldk /* asd */
 class Fast {
    field int x, y;
+
+   constructor Fast new(int X, int Y) {
+      var boolean h;
+
+      let h = true;
+      let x = X;
+      let y = (Y + X) / 2;
+
+      return this;
+   }
    
    function void string() {
       var String s;
@@ -14,20 +24,24 @@ class Fast {
       return;
    }
 
-   function void sum(int Ax, int By) {
+   function int sum(int Ax, int By) {
       var Array a;
       var int i;
 
       let a = Array.new(5);
       let i = ~(1 + 2) + (3 * 5);
       let Ax = 1 + 2 * 3 - 4 / 5;
-      let By = oi.teste(Ax);
+      let By = oi.teste(Ax, By);
       let a[i] = 2;
 
-      return;
+      return 10;
    }
 
-   method int minus() {
-      return y - x;
+   method void minus() {
+      var int z;
+
+      let z = Fast.sum(2, 3);
+      
+      return;
    }
 }  

@@ -38,6 +38,10 @@ public final class SymbolTable {
         return true;
     }
 
+    public static boolean containsSubroutine(String name) {
+        return subroutines.contains(SymbolTable.getClassName() + "." + name);
+    }
+
     public static boolean addClassSymbol(String symbol, String type, SymbolKind kind) {
         if (classTable.containsKey(symbol)) {
             return false;
@@ -55,7 +59,7 @@ public final class SymbolTable {
         }
 
         int offset = actualSubroutineKind.equals(SubroutineKind.METHOD) ? 1 : 0;
-        int index = kind.equals(SymbolKind.LOCAL) ? localIndex++ : staticIndex++;
+        int index = kind.equals(SymbolKind.LOCAL) ? localIndex++ : argIndex++;
 
         subroutineTable.putIfAbsent(symbol, new SymbolAttribute(type, kind, index + offset));
         return true;

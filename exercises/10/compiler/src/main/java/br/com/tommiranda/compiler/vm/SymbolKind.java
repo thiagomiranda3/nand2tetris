@@ -3,7 +3,7 @@ package br.com.tommiranda.compiler.vm;
 import br.com.tommiranda.compiler.errors.SyntaxError;
 
 public enum SymbolKind {
-    FIELD("field"),
+    FIELD("this"),
     STATIC("static"),
     ARGUMENT("argument"),
     LOCAL("local");

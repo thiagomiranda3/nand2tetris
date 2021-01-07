@@ -13,10 +13,9 @@ class Square {
       let x = Ax;
       let y = Ay;
       let size = Asize;
-      do draw();
+      do draw123();
 
-      let teste /* = */ = 3; // COMENTÁRIO
-      return x;
+      return this;
    }
 
    method void dispose() {
