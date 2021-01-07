@@ -215,7 +215,17 @@ public class VmWriter {
     private List<String> expression(Node node) {
         List<Node> children = node.getChildren();
 
-        return term(children.get(0));
+        List<String> vm_code = new ArrayList<>();
+
+        for (Node child : children) {
+            if(child.getType().equals(NodeType.TERM)) {
+                vm_code.addAll(term(children.get(0)));
+            } else if (child.getType().equals(NodeType.SYMBOL)) {
+                vm_code.add(SymbolToVM.convert(child.getValue()));
+            }
+        }
+
+        return vm_code;
     }
 
     private List<String> term(Node node) {
@@ -223,9 +233,8 @@ public class VmWriter {
 
         List<String> vm_code = new ArrayList<>();
 
+        Node child = children.get(0);
         if (children.size() == 1) {
-            Node child = children.get(0);
-
             if (child.getType().equals(NodeType.INTEGER_CONSTANT)) {
                 vm_code.add("push constant " + child.getValue());
             } else if (child.getType().equals(NodeType.STRING_CONSTANT)) {
@@ -255,7 +264,23 @@ public class VmWriter {
                 vm_code.add("not");
             }
         } else {
+            if(child.getValue().equals("-")) {
+                term(children.get(1));
+                vm_code.add("neg");
+            } else if(child.getValue().equals("~")) {
+                term(children.get(1));
+                vm_code.add("not");
+            } else if(child.getValue().equals("(")) {
+                expression(children.get(1));
+            } else if(child.getType().equals(NodeType.IDENTIFIER)) {
+                String variable = child.getValue();
+                SymbolAttribute symbolAttribute = SymbolTable.getSymbol(variable);
+                if (symbolAttribute == null) {
+                    throw parseError(children.get(1), variable + " undefined");
+                }
 
+                
+            }
         }
 
         return vm_code;

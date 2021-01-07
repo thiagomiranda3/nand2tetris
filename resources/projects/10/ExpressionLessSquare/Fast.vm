@@ -8,8 +8,28 @@ function Fast.sum 2
 push constant 5
 call Array.new 1
 pop local 0
+push constant 1
+push constant 2
+add
+not
 push constant 3
+push constant 5
+call Math.multiply 2
+add
 pop local 1
+push constant 1
+push constant 2
+add
+push constant 3
+call Math.multiply 2
+push constant 4
+sub
+push constant 5
+call Math.divide 2
+pop argument 0
+push argument 0
+call oi.teste 1
+pop argument 1
 push local 1
 push local 0
 add

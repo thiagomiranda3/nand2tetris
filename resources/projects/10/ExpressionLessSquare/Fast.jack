@@ -14,12 +14,14 @@ class Fast {
       return;
    }
 
-   function void sum(int Ax) {
+   function void sum(int Ax, int By) {
       var Array a;
       var int i;
 
       let a = Array.new(5);
-      let i = 3;
+      let i = ~(1 + 2) + (3 * 5);
+      let Ax = 1 + 2 * 3 - 4 / 5;
+      let By = oi.teste(Ax);
       let a[i] = 2;
 
       return;
