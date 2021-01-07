@@ -1,0 +1,29 @@
+function Fast.string 1
+push constant 0
+not
+pop local 0
+push constant 0
+return
+function Fast.sum 2
+push constant 5
+call Array.new 1
+pop local 0
+push constant 3
+pop local 1
+push local 1
+push local 0
+add
+push constant 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+return
+function Fast.minus 0
+push argument 0
+pop pointer 0
+push this 1
+push this 0
+sub
+return

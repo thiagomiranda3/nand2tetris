@@ -5,6 +5,7 @@ import br.com.tommiranda.compiler.errors.SyntaxError;
 import br.com.tommiranda.compiler.parsers.structure.ClassParser;
 import br.com.tommiranda.compiler.tokenizer.Token;
 import br.com.tommiranda.compiler.tokenizer.Tokenizer;
+import br.com.tommiranda.compiler.vm.SymbolTable;
 import br.com.tommiranda.compiler.vm.VmWriter;
 import com.google.gson.Gson;
 import org.apache.commons.io.FilenameUtils;
@@ -71,11 +72,15 @@ public class Main {
         List<Token> tokens = new Tokenizer().tokenizeFile(path);
 
         try {
+            SymbolTable.setClassName(fileName);
+
             Node root = new ClassParser().parse(tokens);
 
             System.out.println(new Gson().toJson(root));
 
-            new VmWriter().write(root);
+            List<String> vm_code = new VmWriter().write(root);
+
+            System.out.println("VM CODE -------------------------------------------------------------\n\n" + String.join("\n", vm_code));
 
             //        Files.write(Paths.get(fileName + ".xml"), assembly);
         } catch (SyntaxError e) {

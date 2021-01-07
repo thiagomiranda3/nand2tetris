@@ -3,10 +3,10 @@ package br.com.tommiranda.compiler.vm;
 public class SymbolAttribute {
 
     private final String type;
-    private final String kind;
+    private final SymbolKind kind;
     private final int index;
 
-    public SymbolAttribute(String type, String kind, int index) {
+    public SymbolAttribute(String type, SymbolKind kind, int index) {
         this.type = type;
         this.kind = kind;
         this.index = index;
@@ -16,7 +16,7 @@ public class SymbolAttribute {
         return type;
     }
 
-    public String getKind() {
+    public SymbolKind getKind() {
         return kind;
     }
 
