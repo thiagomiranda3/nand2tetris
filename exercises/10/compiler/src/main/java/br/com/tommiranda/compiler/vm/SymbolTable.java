@@ -59,9 +59,9 @@ public final class SymbolTable {
         }
 
         int offset = actualSubroutineKind.equals(SubroutineKind.METHOD) ? 1 : 0;
-        int index = kind.equals(SymbolKind.LOCAL) ? localIndex++ : argIndex++;
+        int index = kind.equals(SymbolKind.LOCAL) ? localIndex++ : offset + argIndex++;
 
-        subroutineTable.putIfAbsent(symbol, new SymbolAttribute(type, kind, index + offset));
+        subroutineTable.putIfAbsent(symbol, new SymbolAttribute(type, kind, index));
         return true;
     }
 

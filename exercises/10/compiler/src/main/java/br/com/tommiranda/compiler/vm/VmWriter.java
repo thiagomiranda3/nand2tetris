@@ -84,6 +84,11 @@ public class VmWriter {
 
         vm_code.addAll(vm_body);
 
+        String lastCode = vm_code.get(vm_code.size() - 1);
+        if (!lastCode.equals("return")) {
+            throw parseError(children.get(2), "Subroutine " + subroutineName + " don't end with a return statament");
+        }
+
         SymbolTable.endSubroutine(subroutineName);
 
         return vm_code;
@@ -138,16 +143,23 @@ public class VmWriter {
     private List<String> statements(Node node) {
         List<Node> children = node.getChildren();
 
-        boolean lastStatementReturn = false;
+        boolean returnAlreadyUsed = false;
 
         List<String> vm_code = new ArrayList<>();
 
         for (Node child : children) {
+            if(returnAlreadyUsed) {
+                throw parseError(child, "Unreachable code");
+            }
+
             switch (child.getType()) {
                 case DO_STATEMENT -> vm_code.addAll(doStatement(child));
                 case IF_STATEMENT -> vm_code.addAll(ifStatement(child));
                 case LET_STATEMENT -> vm_code.addAll(letStatement(child));
-                case RETURN_STATEMENT -> vm_code.addAll(returnStatement(child));
+                case RETURN_STATEMENT -> {
+                    vm_code.addAll(returnStatement(child));
+                    returnAlreadyUsed = true;
+                }
                 case WHILE_STATEMENT -> vm_code.addAll(whileStatement(child));
             }
         }
@@ -197,12 +209,35 @@ public class VmWriter {
     private List<String> returnStatement(Node node) {
         List<String> vm_code = new ArrayList<>();
 
+        Node expression = node.getChildren().get(1);
+
         if (SymbolTable.getActualSubroutineKind().equals(SubroutineKind.CONSTRUCTOR)) {
+            if (expression.getChildren().isEmpty()) {
+                throw parseError(expression, "A constructor must return 'this'");
+            }
+
+            Node term = expression.getChildren().get(0);
+
+            if (term.getType().equals(NodeType.TERM)) {
+                String returned = term.getChildren().get(0).getValue();
+
+                if (!returned.equals("this")) {
+                    throw parseError(term, "A constructor must return 'this'");
+                }
+            } else {
+                throw parseError(term, "A constructor must return 'this'");
+            }
+
             vm_code.add("push pointer 0");
         } else if (SymbolTable.getActualSubroutineType().equals("void")) {
+            if (expression.getType().equals(NodeType.EXPRESSION)) {
+                throw parseError(expression, "A void function must not return a value");
+            }
+
             vm_code.add("push constant 0");
         }
 
+        vm_code.addAll(expression(expression));
         vm_code.add("return");
 
         return vm_code;
