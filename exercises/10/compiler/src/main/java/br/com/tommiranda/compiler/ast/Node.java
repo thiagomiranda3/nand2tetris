@@ -38,4 +38,13 @@ public final class Node {
     public List<Node> getChildren() {
         return children;
     }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+               "type=" + type +
+               ", value='" + value + '\'' +
+               ", children=" + children.size() +
+               '}';
+    }
 }

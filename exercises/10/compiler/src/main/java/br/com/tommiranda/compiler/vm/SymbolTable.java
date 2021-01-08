@@ -7,18 +7,22 @@ import java.util.Set;
 
 public final class SymbolTable {
 
-    private static final Set<String> subroutines = new HashSet<>();
     private static final Set<String> classes = new HashSet<>();
-    private static final Map<String, SymbolAttribute> classTable = new HashMap<>();
-    private static final Map<String, SymbolAttribute> subroutineTable = new HashMap<>();
-    private static String className;
-    private static String actualSubroutineName;
-    private static String actualSubroutineType;
-    private static SubroutineKind actualSubroutineKind;
-    private static int fieldIndex = 0;
-    private static int staticIndex = 0;
-    private static int argIndex = 0;
-    private static int localIndex = 0;
+    private static final Set<String> subroutines = new HashSet<>();
+    private final String className;
+    private final Map<String, SymbolAttribute> classTable = new HashMap<>();
+    private final Map<String, SymbolAttribute> subroutineTable = new HashMap<>();
+    private String actualSubroutineName;
+    private String actualSubroutineType;
+    private SubroutineKind actualSubroutineKind;
+    private int fieldIndex = 0;
+    private int staticIndex = 0;
+    private int argIndex = 0;
+    private int localIndex = 0;
+
+    public SymbolTable(String className) {
+        this.className = className;
+    }
 
     public static boolean addClass(String name) {
         if (classes.contains(name)) {
@@ -29,20 +33,20 @@ public final class SymbolTable {
         return true;
     }
 
-    public static boolean addSubroutine(String name) {
-        if (subroutines.contains(SymbolTable.getClassName() + "." + name)) {
+    public static boolean addSubroutine(String className, String name) {
+        if (subroutines.contains(className + "." + name)) {
             return false;
         }
 
-        subroutines.add(SymbolTable.getClassName() + "." + name);
+        subroutines.add(className + "." + name);
         return true;
     }
 
-    public static boolean containsSubroutine(String name) {
-        return subroutines.contains(SymbolTable.getClassName() + "." + name);
+    public static boolean containsSubroutine(String className, String name) {
+        return subroutines.contains(className + "." + name);
     }
 
-    public static boolean addClassSymbol(String symbol, String type, SymbolKind kind) {
+    public boolean addClassSymbol(String symbol, String type, SymbolKind kind) {
         if (classTable.containsKey(symbol)) {
             return false;
         }
@@ -53,7 +57,7 @@ public final class SymbolTable {
         return true;
     }
 
-    public static boolean addSubroutineSymbol(String symbol, String type, SymbolKind kind) {
+    public boolean addSubroutineSymbol(String symbol, String type, SymbolKind kind) {
         if (subroutineTable.containsKey(symbol)) {
             return false;
         }
@@ -65,19 +69,19 @@ public final class SymbolTable {
         return true;
     }
 
-    public static SymbolAttribute getSymbol(String symbol) {
-        if(classTable.containsKey(symbol)) {
+    public SymbolAttribute getSymbol(String symbol) {
+        if (classTable.containsKey(symbol)) {
             return classTable.get(symbol);
         }
 
         return subroutineTable.get(symbol);
     }
 
-    public static boolean containsSymbol(String symbol) {
+    public boolean containsSymbol(String symbol) {
         return classTable.containsKey(symbol) || subroutineTable.containsKey(symbol);
     }
 
-    public static long countSymbols(SymbolKind kind) {
+    public long countSymbols(SymbolKind kind) {
         if (kind.equals(SymbolKind.FIELD) || kind.equals(SymbolKind.STATIC)) {
             return classTable.values()
                              .stream()
@@ -91,21 +95,17 @@ public final class SymbolTable {
         }
     }
 
-    public static String getClassName() {
+    public String getClassName() {
         return className;
     }
 
-    public static void setClassName(String className) {
-        SymbolTable.className = className;
-    }
-
-    public static void startSubroutine(String name, String type, SubroutineKind kind) {
+    public void startSubroutine(String name, String type, SubroutineKind kind) {
         actualSubroutineName = name;
         actualSubroutineType = type;
         actualSubroutineKind = kind;
     }
 
-    public static void endSubroutine(String name) {
+    public void endSubroutine() {
         actualSubroutineName = null;
         actualSubroutineType = null;
         actualSubroutineKind = null;
@@ -114,15 +114,15 @@ public final class SymbolTable {
         subroutineTable.clear();
     }
 
-    public static String getActualSubroutineName() {
+    public String getActualSubroutineName() {
         return actualSubroutineName;
     }
 
-    public static String getActualSubroutineType() {
+    public String getActualSubroutineType() {
         return actualSubroutineType;
     }
 
-    public static SubroutineKind getActualSubroutineKind() {
+    public SubroutineKind getActualSubroutineKind() {
         return actualSubroutineKind;
     }
 }

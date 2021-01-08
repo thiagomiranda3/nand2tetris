@@ -63,6 +63,10 @@ public class Main {
                     compileFile(path);
                 }
             }
+
+            if(!SymbolTable.containsSubroutine("Main", "main")) {
+                System.out.println("WARNING: No function void main() found");
+            }
         }
     }
 
@@ -72,13 +76,11 @@ public class Main {
         List<Token> tokens = new Tokenizer().tokenizeFile(path);
 
         try {
-            SymbolTable.setClassName(fileName);
-
             Node root = new ClassParser().parse(tokens);
 
-            System.out.println(new Gson().toJson(root));
+            //System.out.println(new Gson().toJson(root));
 
-            List<String> vm_code = new VmWriter().write(root);
+            List<String> vm_code = new VmWriter(fileName).write(root);
 
             Files.write(Paths.get(fileName + ".vm"), vm_code);
         } catch (SyntaxError e) {

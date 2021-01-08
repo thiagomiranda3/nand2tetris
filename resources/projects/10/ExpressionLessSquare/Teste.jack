@@ -3,18 +3,12 @@ Expressionless
         version of projects/10/Square/Square.jack. */
         // aslkdjd
         // saçldk /* asd */
-class Teste {
-   field int x, y;
-   field int size;
-   
-   function void sum(int Ax) {
-      var int teste, teste1, teste2, teste3;
-
-      while(teste + 2 = 4) {
-         let teste2 = teste1 * 2323;
-         let teste3 = teste2 / 999;
-      }
+class Teste {   
+   method void sum() {
+      var int a, b, c, d, z;
       
+      let z = a + b * c - d;
+
       return;
    }
 }  
