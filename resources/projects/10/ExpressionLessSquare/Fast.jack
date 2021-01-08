@@ -9,6 +9,8 @@ class Fast {
    constructor Fast new(int X, int Y) {
       var boolean h;
 
+      do Output.println(2) 3;
+
       let h = true;
       let x = X;
       let y = (Y + X) / 2;

@@ -10,6 +10,9 @@ import java.util.List;
 
 public class VmWriter {
 
+    private int ifCounter = 0;
+    private int whileCounter = 0;
+
     public List<String> write(Node node) {
         List<Node> children = node.getChildren();
 
@@ -52,6 +55,9 @@ public class VmWriter {
     }
 
     private List<String> subroutineDec(Node node) {
+        this.ifCounter = 0;
+        this.whileCounter = 0;
+
         List<Node> children = node.getChildren();
 
         String kind = children.get(0).getValue();
@@ -148,7 +154,7 @@ public class VmWriter {
         List<String> vm_code = new ArrayList<>();
 
         for (Node child : children) {
-            if(returnAlreadyUsed) {
+            if (returnAlreadyUsed) {
                 throw parseError(child, "Unreachable code");
             }
 
@@ -168,13 +174,76 @@ public class VmWriter {
     }
 
     private List<String> doStatement(Node node) {
-        return Collections.emptyList();
+        List<Node> children = node.getChildren();
+
+        List<String> vm_code = new ArrayList<>();
+
+        Node child = children.get(0);
+        if (child.getType().equals(NodeType.IDENTIFIER)) {
+            String variable = child.getValue();
+            SymbolAttribute symbolAttribute = SymbolTable.getSymbol(variable);
+
+            if (children.get(1).getValue().equals(".")) {
+                String subroutineName = children.get(2).getValue();
+
+                long numParameters = countParameters(children, 4);
+                vm_code.addAll(expressionList(children.get(4)));
+
+                if (symbolAttribute != null) {
+                    vm_code.add("call " + symbolAttribute.getType() + "." + " " + numParameters);
+                } else {
+                    vm_code.add("call " + variable + "." + subroutineName + " " + numParameters);
+                }
+            } else if (children.get(1).getValue().equals("(")) {
+                String subroutineName = child.getValue();
+
+                if (!SymbolTable.containsSubroutine(subroutineName)) {
+                    throw parseError(child, "Method " + SymbolTable.getClassName() + "." + subroutineName + " doesn't exist");
+                }
+
+                vm_code.addAll(expressionList(children.get(2)));
+                long numParameters = countParameters(children, 2);
+
+                vm_code.add("call " + SymbolTable.getClassName() + "." + subroutineName + " " + numParameters);
+            }
+        }
+
+        vm_code.add("pop temp 0");
+
+        return vm_code;
     }
 
     private List<String> ifStatement(Node node) {
+        int counter = ifCounter++;
+
         List<Node> children = node.getChildren();
 
-        return Collections.emptyList();
+        List<String> vm_code = new ArrayList<>();
+
+        vm_code.addAll(expression(children.get(2)));
+
+        if (!vm_code.get(vm_code.size() - 1).equals("eq")) {
+            vm_code.add("eq");
+        }
+
+        vm_code.add("if-goto IF_TRUE" + counter);
+        vm_code.add("goto IF_FALSE" + counter);
+        vm_code.add("label IF_TRUE" + counter);
+
+        vm_code.addAll(statements(children.get(5)));
+
+        if (children.size() > 7 && children.get(7).getValue().equals("else")) {
+            vm_code.add("goto IF_END" + counter);
+            vm_code.add("label IF_FALSE" + counter);
+
+            vm_code.addAll(statements(children.get(9)));
+
+            vm_code.add("label IF_END" + counter);
+        } else {
+            vm_code.add("label IF_FALSE" + counter);
+        }
+
+        return vm_code;
     }
 
     private List<String> letStatement(Node node) {

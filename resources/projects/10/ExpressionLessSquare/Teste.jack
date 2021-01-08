@@ -8,15 +8,16 @@ class Teste {
    field int size;
    
    function void sum(int Ax) {
-      var int teste;
+      var int teste, teste1, teste2, teste3;
 
-      let x = Ax;
-
-      let teste = teste(2, 2, 3);
-
-      do Output.printString("TESTE");
-   
-      let teste = /* tre*/ /* /** = ***/  /* =dasd */ 12345 /* dasda= */; // COMENTÁRIO
-      return this;
+      if(teste + 2 = 4) {
+         let teste2 = teste1 * 2323;
+         let teste3 = teste2 / 999;
+      } else {
+         let teste2 = teste1 * 2323;
+         let teste3 = teste2 / 999;
+      }
+      
+      return;
    }
 }  
