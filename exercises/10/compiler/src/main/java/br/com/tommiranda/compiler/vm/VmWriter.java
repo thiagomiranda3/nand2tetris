@@ -94,11 +94,6 @@ public class VmWriter {
 
         vm_code.addAll(vm_body);
 
-        String lastCode = vm_code.get(vm_code.size() - 1);
-        if (!lastCode.equals("return")) {
-            throw parseError(children.get(2), "Subroutine " + subroutineName + " don't end up with a return statament");
-        }
-
         symbolTable.endSubroutine();
 
         return vm_code;
@@ -130,7 +125,7 @@ public class VmWriter {
             varDec(children.get(i++));
         }
 
-        return statements(children.get(i));
+        return statements(children.get(i), null);
     }
 
     private void varDec(Node node) {
@@ -149,28 +144,45 @@ public class VmWriter {
         } while (children.get(i++).getValue().equals(","));
     }
 
-    private List<String> statements(Node node) {
+    private List<String> statements(Node node, Boolean lastRootStatement) {
         List<Node> children = node.getChildren();
 
         boolean returnAlreadyUsed = false;
 
         List<String> vm_code = new ArrayList<>();
 
-        for (Node child : children) {
+        for (int i = 0; i < children.size(); i++) {
+            Node child = children.get(i);
+
+            if(lastRootStatement == null) {
+                lastRootStatement = true;
+            }
+
+            boolean lastStatement = i == (children.size() - 1) && lastRootStatement;
+
             if (returnAlreadyUsed) {
-                throw parseError(child, "Unreachable code");
+                throw parseError(child.getChildren().get(0), "Unreachable code");
+            }
+
+            // If is last statement, only if, while and return statements are allowed
+            if (lastStatement && (child.getType().equals(NodeType.DO_STATEMENT) || child.getType().equals(NodeType.LET_STATEMENT))) {
+                throw parseError(child, "Subroutine " + symbolTable.getActualSubroutineName() + ": may reach end of subroutine without 'return'");
             }
 
             switch (child.getType()) {
                 case DO_STATEMENT -> vm_code.addAll(doStatement(child));
-                case IF_STATEMENT -> vm_code.addAll(ifStatement(child));
+                case IF_STATEMENT -> vm_code.addAll(ifStatement(child, lastStatement));
                 case LET_STATEMENT -> vm_code.addAll(letStatement(child));
                 case RETURN_STATEMENT -> {
                     vm_code.addAll(returnStatement(child));
                     returnAlreadyUsed = true;
                 }
-                case WHILE_STATEMENT -> vm_code.addAll(whileStatement(child));
+                case WHILE_STATEMENT -> vm_code.addAll(whileStatement(child, lastStatement));
             }
+        }
+
+        if (lastRootStatement != null && lastRootStatement && children.isEmpty()) {
+            throw parseError(node, "Subroutine " + symbolTable.getActualSubroutineName() + ": may reach end of subroutine without 'return'");
         }
 
         return vm_code;
@@ -237,7 +249,7 @@ public class VmWriter {
         return vm_code;
     }
 
-    private List<String> ifStatement(Node node) {
+    private List<String> ifStatement(Node node, boolean lastStatement) {
         int counter = ifCounter++;
 
         List<Node> children = node.getChildren();
@@ -246,7 +258,7 @@ public class VmWriter {
 
         vm_code.addAll(expression(children.get(2)));
 
-        if (!vm_code.get(vm_code.size() - 1).equals("eq")) {
+        if (!vm_code.get(vm_code.size() - 1).equals("eq") && !vm_code.get(vm_code.size() - 1).equals("not")) {
             vm_code.add("eq");
         }
 
@@ -254,13 +266,13 @@ public class VmWriter {
         vm_code.add("goto IF_FALSE" + counter);
         vm_code.add("label IF_TRUE" + counter);
 
-        vm_code.addAll(statements(children.get(5)));
+        vm_code.addAll(statements(children.get(5), lastStatement));
 
         if (children.size() > 7 && children.get(7).getValue().equals("else")) {
             vm_code.add("goto IF_END" + counter);
             vm_code.add("label IF_FALSE" + counter);
 
-            vm_code.addAll(statements(children.get(9)));
+            vm_code.addAll(statements(children.get(9), lastStatement));
 
             vm_code.add("label IF_END" + counter);
         } else {
@@ -324,10 +336,12 @@ public class VmWriter {
             vm_code.add("push pointer 0");
         } else if (symbolTable.getActualSubroutineType().equals("void")) {
             if (expression.getType().equals(NodeType.EXPRESSION)) {
-                throw parseError(expression, "A void function must not return a value");
+                throw parseError(expression, "In subroutine " + symbolTable.getActualSubroutineName() + ": A void function must not return a value");
             }
 
             vm_code.add("push constant 0");
+        } else if (!expression.getType().equals(NodeType.EXPRESSION)) {
+            throw parseError(expression, "In subroutine " + symbolTable.getActualSubroutineName() + ": A non-void function must return a value");
         }
 
         vm_code.addAll(expression(expression));
@@ -336,7 +350,7 @@ public class VmWriter {
         return vm_code;
     }
 
-    private List<String> whileStatement(Node node) {
+    private List<String> whileStatement(Node node, boolean lastStatement) {
         int counter = this.whileCounter++;
 
         List<Node> children = node.getChildren();
@@ -354,7 +368,7 @@ public class VmWriter {
         vm_code.add("not");
         vm_code.add("if-goto WHILE_END" + counter);
 
-        vm_code.addAll(statements(children.get(5)));
+        vm_code.addAll(statements(children.get(5), lastStatement));
 
         vm_code.add("goto WHILE_EXP" + counter);
         vm_code.add("label WHILE_END" + counter);
