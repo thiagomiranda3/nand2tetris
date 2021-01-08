@@ -10,10 +10,7 @@ class Teste {
    function void sum(int Ax) {
       var int teste, teste1, teste2, teste3;
 
-      if(teste + 2 = 4) {
-         let teste2 = teste1 * 2323;
-         let teste3 = teste2 / 999;
-      } else {
+      while(teste + 2 = 4) {
          let teste2 = teste1 * 2323;
          let teste3 = teste2 / 999;
       }

@@ -313,7 +313,29 @@ public class VmWriter {
     }
 
     private List<String> whileStatement(Node node) {
-        return Collections.emptyList();
+        int counter = this.whileCounter++;
+
+        List<Node> children = node.getChildren();
+
+        List<String> vm_code = new ArrayList<>();
+
+        vm_code.add("label WHILE_EXP" + counter);
+
+        vm_code.addAll(expression(children.get(2)));
+
+        if (!vm_code.get(vm_code.size() - 1).equals("eq")) {
+            vm_code.add("eq");
+        }
+
+        vm_code.add("not");
+        vm_code.add("if-goto WHILE_END" + counter);
+
+        vm_code.addAll(statements(children.get(5)));
+
+        vm_code.add("goto WHILE_EXP" + counter);
+        vm_code.add("label WHILE_END" + counter);
+
+        return vm_code;
     }
 
     private List<String> expression(Node node) {

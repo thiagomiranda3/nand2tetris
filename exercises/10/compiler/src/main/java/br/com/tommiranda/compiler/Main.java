@@ -80,9 +80,7 @@ public class Main {
 
             List<String> vm_code = new VmWriter().write(root);
 
-            System.out.println("VM CODE -------------------------------------------------------------\n\n" + String.join("\n", vm_code));
-
-            //        Files.write(Paths.get(fileName + ".xml"), assembly);
+            Files.write(Paths.get(fileName + ".vm"), vm_code);
         } catch (SyntaxError e) {
             System.out.println("In " + fileName + ".jack " + e.getMessage());
         }
