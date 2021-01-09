@@ -102,7 +102,7 @@ public class Main {
     }
 
     private static void verifySubroutines() {
-        Set<String> whitelistClasses = Set.of("Screen", "Memory", "Sys", "Keyboard");
+        Set<String> whitelistClasses = Set.of("Screen", "Memory", "Sys", "Keyboard", "Output", "Math");
 
         Map<String, Subroutine> subroutineTable = SymbolTable.getSubroutineTable();
 
@@ -116,6 +116,7 @@ public class Main {
             if(declaredSubroutine == null) {
                 showError(subroutineCall.getCallClass(), subroutineCall.getCallNumber(), "Subroutine " + subroutineCall.getClassName() + "." + subroutineCall.getName() + " doesn't exist");
                 compilationOK = false;
+                continue;
             }
 
             if(declaredSubroutine.getKind().equals(SubroutineKind.CONSTRUCTOR) && subroutineCall.getKind().equals(SubroutineKind.FUNCTION)) {
