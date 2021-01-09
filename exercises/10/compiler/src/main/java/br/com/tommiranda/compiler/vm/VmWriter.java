@@ -154,7 +154,7 @@ public class VmWriter {
         for (int i = 0; i < children.size(); i++) {
             Node child = children.get(i);
 
-            if(lastRootStatement == null) {
+            if (lastRootStatement == null) {
                 lastRootStatement = true;
             }
 
@@ -166,7 +166,7 @@ public class VmWriter {
 
             // If is last statement, only if, while and return statements are allowed
             if (lastStatement && (child.getType().equals(NodeType.DO_STATEMENT) || child.getType().equals(NodeType.LET_STATEMENT))) {
-                throw parseError(child, "Subroutine " + symbolTable.getActualSubroutineName() + ": may reach end of subroutine without 'return'");
+                throw parseError(child, "Subroutine " + symbolTable.getActualSubroutine().getName() + ": may reach end of subroutine without 'return'");
             }
 
             switch (child.getType()) {
@@ -182,7 +182,7 @@ public class VmWriter {
         }
 
         if (lastRootStatement != null && lastRootStatement && children.isEmpty()) {
-            throw parseError(node, "Subroutine " + symbolTable.getActualSubroutineName() + ": may reach end of subroutine without 'return'");
+            throw parseError(node, "Subroutine " + symbolTable.getActualSubroutine().getName() + ": may reach end of subroutine without 'return'");
         }
 
         return vm_code;
@@ -206,32 +206,36 @@ public class VmWriter {
 
                 if (symbolAttribute != null) {
                     if (symbolAttribute.getKind().equals(SymbolKind.FIELD) &&
-                        symbolTable.getActualSubroutineKind().equals(SubroutineKind.FUNCTION)) {
+                        symbolTable.getActualSubroutine().getKind().equals(SubroutineKind.FUNCTION)) {
                         throw parseError(child, "Field variable " + variable + " inside a function");
                     }
 
-                    vm_code.add("call " + symbolAttribute.getType() + "." + " " + numParameters);
+                    vm_code.add("push " + symbolAttribute.getKind().getName() + " " + symbolAttribute.getIndex());
+
+                    vm_code.add("call " + symbolAttribute.getType() + "." + subroutineName + " " + (numParameters + 1));
                 } else {
                     vm_code.add("call " + variable + "." + subroutineName + " " + numParameters);
                 }
             } else if (children.get(2).getValue().equals("(")) {
                 String subroutineName = child.getValue();
 
-                if (!SymbolTable.containsSubroutine(symbolTable.getClassName(), subroutineName)) {
-                    throw parseError(child, "Method " + symbolTable.getClassName() + "." + subroutineName + " doesn't exist");
-                }
+//                if (!SymbolTable.containsSubroutine(symbolTable.getClassName(), subroutineName)) {
+//                    throw parseError(child, "Method " + symbolTable.getClassName() + "." + subroutineName + " doesn't exist");
+//                }
 
                 vm_code.addAll(expressionList(children.get(3)));
                 long numParameters = countParameters(children, 3);
 
-                vm_code.add("call " + symbolTable.getClassName() + "." + subroutineName + " " + numParameters);
+                vm_code.add("push pointer 0");
+
+                vm_code.add("call " + symbolTable.getClassName() + "." + subroutineName + " " + (numParameters + 1));
             } else if (children.get(2).getValue().equals("[")) {
                 if (symbolAttribute == null) {
                     throw parseError(children.get(2), variable + " undefined");
                 }
 
                 if (symbolAttribute.getKind().equals(SymbolKind.FIELD) &&
-                    symbolTable.getActualSubroutineKind().equals(SubroutineKind.FUNCTION)) {
+                    symbolTable.getActualSubroutine().getKind().equals(SubroutineKind.FUNCTION)) {
                     throw parseError(child, "Field variable " + variable + " inside a function");
                 }
 
@@ -258,7 +262,12 @@ public class VmWriter {
 
         vm_code.addAll(expression(children.get(2)));
 
-        if (!vm_code.get(vm_code.size() - 1).equals("eq") && !vm_code.get(vm_code.size() - 1).equals("not")) {
+        if (!vm_code.get(vm_code.size() - 1).equals("eq") &&
+            !vm_code.get(vm_code.size() - 1).equals("not") &&
+            !vm_code.get(vm_code.size() - 1).equals("gt") &&
+            !vm_code.get(vm_code.size() - 1).equals("lt") &&
+            !vm_code.get(vm_code.size() - 1).equals("and") &&
+            !vm_code.get(vm_code.size() - 1).equals("or")) {
             vm_code.add("eq");
         }
 
@@ -316,7 +325,7 @@ public class VmWriter {
 
         Node expression = node.getChildren().get(1);
 
-        if (symbolTable.getActualSubroutineKind().equals(SubroutineKind.CONSTRUCTOR)) {
+        if (symbolTable.getActualSubroutine().getKind().equals(SubroutineKind.CONSTRUCTOR)) {
             if (expression.getChildren().isEmpty()) {
                 throw parseError(expression, "A constructor must return 'this'");
             }
@@ -332,16 +341,14 @@ public class VmWriter {
             } else {
                 throw parseError(term, "A constructor must return 'this'");
             }
-
-            vm_code.add("push pointer 0");
-        } else if (symbolTable.getActualSubroutineType().equals("void")) {
+        } else if (symbolTable.getActualSubroutine().getType().equals("void")) {
             if (expression.getType().equals(NodeType.EXPRESSION)) {
-                throw parseError(expression, "In subroutine " + symbolTable.getActualSubroutineName() + ": A void function must not return a value");
+                throw parseError(expression, "In subroutine " + symbolTable.getActualSubroutine().getName() + ": A void function must not return a value");
             }
 
             vm_code.add("push constant 0");
         } else if (!expression.getType().equals(NodeType.EXPRESSION)) {
-            throw parseError(expression, "In subroutine " + symbolTable.getActualSubroutineName() + ": A non-void function must return a value");
+            throw parseError(expression, "In subroutine " + symbolTable.getActualSubroutine().getName() + ": A non-void function must return a value");
         }
 
         vm_code.addAll(expression(expression));
@@ -439,7 +446,7 @@ public class VmWriter {
                 }
 
                 if (symbolAttribute.getKind().equals(SymbolKind.FIELD) &&
-                    symbolTable.getActualSubroutineKind().equals(SubroutineKind.FUNCTION)) {
+                    symbolTable.getActualSubroutine().getKind().equals(SubroutineKind.FUNCTION)) {
                     throw parseError(child, "Field variable " + variable + " inside a function");
                 }
 
@@ -449,6 +456,8 @@ public class VmWriter {
             } else if (child.getValue().equals("true")) {
                 vm_code.add("push constant 0");
                 vm_code.add("not");
+            } else if(child.getValue().equals("this")) {
+                vm_code.add("push pointer 0");
             }
         } else {
             if (child.getValue().equals("-")) {
@@ -471,11 +480,13 @@ public class VmWriter {
 
                     if (symbolAttribute != null) {
                         if (symbolAttribute.getKind().equals(SymbolKind.FIELD) &&
-                            symbolTable.getActualSubroutineKind().equals(SubroutineKind.FUNCTION)) {
+                            symbolTable.getActualSubroutine().getKind().equals(SubroutineKind.FUNCTION)) {
                             throw parseError(child, "Field variable " + variable + " inside a function");
                         }
 
-                        vm_code.add("call " + symbolAttribute.getType() + "." + " " + numParameters);
+                        vm_code.add("push " + symbolAttribute.getKind().getName() + " " + symbolAttribute.getIndex());
+
+                        vm_code.add("call " + symbolAttribute.getType() + "." + subroutineName + " " + (numParameters + 1));
                     } else {
                         vm_code.add("call " + variable + "." + subroutineName + " " + numParameters);
                     }
@@ -489,14 +500,16 @@ public class VmWriter {
                     vm_code.addAll(expressionList(children.get(2)));
                     long numParameters = countParameters(children, 2);
 
-                    vm_code.add("call " + symbolTable.getClassName() + "." + subroutineName + " " + numParameters);
+                    vm_code.add("push pointer 0");
+
+                    vm_code.add("call " + symbolTable.getClassName() + "." + subroutineName + " " + (numParameters + 1));
                 } else if (children.get(1).getValue().equals("[")) {
                     if (symbolAttribute == null) {
                         throw parseError(children.get(1), variable + " undefined");
                     }
 
                     if (symbolAttribute.getKind().equals(SymbolKind.FIELD) &&
-                        symbolTable.getActualSubroutineKind().equals(SubroutineKind.FUNCTION)) {
+                        symbolTable.getActualSubroutine().getKind().equals(SubroutineKind.FUNCTION)) {
                         throw parseError(child, "Field variable " + variable + " inside a function");
                     }
 

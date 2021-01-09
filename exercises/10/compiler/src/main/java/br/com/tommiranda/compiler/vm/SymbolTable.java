@@ -12,9 +12,8 @@ public final class SymbolTable {
     private final String className;
     private final Map<String, SymbolAttribute> classTable = new HashMap<>();
     private final Map<String, SymbolAttribute> subroutineTable = new HashMap<>();
-    private String actualSubroutineName;
-    private String actualSubroutineType;
-    private SubroutineKind actualSubroutineKind;
+
+    private Subroutine actualSubroutine;
     private int fieldIndex = 0;
     private int staticIndex = 0;
     private int argIndex = 0;
@@ -62,7 +61,7 @@ public final class SymbolTable {
             return false;
         }
 
-        int offset = actualSubroutineKind.equals(SubroutineKind.METHOD) ? 1 : 0;
+        int offset = actualSubroutine.getKind().equals(SubroutineKind.METHOD) ? 1 : 0;
         int index = kind.equals(SymbolKind.LOCAL) ? localIndex++ : offset + argIndex++;
 
         subroutineTable.putIfAbsent(symbol, new SymbolAttribute(type, kind, index));
@@ -100,29 +99,17 @@ public final class SymbolTable {
     }
 
     public void startSubroutine(String name, String type, SubroutineKind kind) {
-        actualSubroutineName = name;
-        actualSubroutineType = type;
-        actualSubroutineKind = kind;
+        this.actualSubroutine = new Subroutine(name, type, kind);
     }
 
     public void endSubroutine() {
-        actualSubroutineName = null;
-        actualSubroutineType = null;
-        actualSubroutineKind = null;
+        this.actualSubroutine = null;
         localIndex = 0;
         argIndex = 0;
         subroutineTable.clear();
     }
 
-    public String getActualSubroutineName() {
-        return actualSubroutineName;
-    }
-
-    public String getActualSubroutineType() {
-        return actualSubroutineType;
-    }
-
-    public SubroutineKind getActualSubroutineKind() {
-        return actualSubroutineKind;
+    public Subroutine getActualSubroutine() {
+        return actualSubroutine;
     }
 }
