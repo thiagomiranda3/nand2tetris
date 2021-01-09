@@ -20,8 +20,8 @@ import java.util.stream.Stream;
 
 public class Main {
 
-    private static boolean compilationOK = true;
     private static final Set<String> fileNames = new HashSet<>();
+    private static boolean compilationOK = true;
 
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
@@ -44,7 +44,7 @@ public class Main {
 
         verifySubroutines();
 
-        if(!compilationOK) {
+        if (!compilationOK) {
             for (String fileName : fileNames) {
                 Files.deleteIfExists(Paths.get(fileName + ".vm"));
             }
@@ -75,7 +75,7 @@ public class Main {
                 }
             }
 
-            if(!SymbolTable.containsSubroutine("Main", "main")) {
+            if (!SymbolTable.containsSubroutine("Main", "main")) {
                 System.out.println("WARNING: No function void main() found");
                 compilationOK = false;
             }
@@ -107,23 +107,23 @@ public class Main {
         Map<String, Subroutine> subroutineTable = SymbolTable.getSubroutineTable();
 
         for (Subroutine subroutineCall : SymbolTable.getSubroutinesToVerify()) {
-            if(whitelistClasses.contains(subroutineCall.getClassName())) {
+            if (whitelistClasses.contains(subroutineCall.getClassName())) {
                 continue;
             }
 
             Subroutine declaredSubroutine = subroutineTable.get(subroutineCall.getClassName() + "." + subroutineCall.getName());
 
-            if(declaredSubroutine == null) {
+            if (declaredSubroutine == null) {
                 showError(subroutineCall.getCallClass(), subroutineCall.getCallNumber(), "Subroutine " + subroutineCall.getClassName() + "." + subroutineCall.getName() + " doesn't exist");
                 compilationOK = false;
                 continue;
             }
 
-            if(declaredSubroutine.getKind().equals(SubroutineKind.CONSTRUCTOR) && subroutineCall.getKind().equals(SubroutineKind.FUNCTION)) {
+            if (declaredSubroutine.getKind().equals(SubroutineKind.CONSTRUCTOR) && subroutineCall.getKind().equals(SubroutineKind.FUNCTION)) {
                 continue;
             }
 
-            if(!declaredSubroutine.getKind().equals(subroutineCall.getKind())) {
+            if (!declaredSubroutine.getKind().equals(subroutineCall.getKind())) {
                 showError(subroutineCall.getCallClass(), subroutineCall.getCallNumber(), declaredSubroutine.getKind().getName() + " " + subroutineCall.getClassName() + "." + subroutineCall.getName() + " called as a " + subroutineCall.getKind().getName());
                 compilationOK = false;
             }

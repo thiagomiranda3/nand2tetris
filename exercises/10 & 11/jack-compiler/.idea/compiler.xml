@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="compiler" />
+        <module name="jack-compiler" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="jack-compiler" target="15" />
+    </bytecodeTargetLevel>
   </component>
 </project>
