@@ -280,15 +280,6 @@ public class VmWriter {
 
         vm_code.addAll(expression(children.get(2)));
 
-        if (!vm_code.get(vm_code.size() - 1).equals("eq") &&
-            !vm_code.get(vm_code.size() - 1).equals("not") &&
-            !vm_code.get(vm_code.size() - 1).equals("gt") &&
-            !vm_code.get(vm_code.size() - 1).equals("lt") &&
-            !vm_code.get(vm_code.size() - 1).equals("and") &&
-            !vm_code.get(vm_code.size() - 1).equals("or")) {
-            vm_code.add("eq");
-        }
-
         vm_code.add("if-goto IF_TRUE" + counter);
         vm_code.add("goto IF_FALSE" + counter);
         vm_code.add("label IF_TRUE" + counter);

@@ -102,7 +102,7 @@ public class Main {
     }
 
     private static void verifySubroutines() {
-        Set<String> whitelistClasses = Set.of("Screen", "Memory", "Sys", "Keyboard", "Output", "Math");
+        Set<String> whitelistClasses = Set.of("Screen", "Memory", "Sys", "Keyboard", "Output", "Math", "Array");
 
         Map<String, Subroutine> subroutineTable = SymbolTable.getSubroutineTable();
 
