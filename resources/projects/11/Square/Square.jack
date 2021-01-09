@@ -26,6 +26,13 @@ class Square {
       return;
    }
 
+   /** Draws the square on the screen. */
+   method void draw() {
+      do Screen.setColor(true);
+      do Screen.drawRectangle();
+      return;
+   }
+
    /** Erases the square from the screen. */
    method void erase() {
       do Screen.setColor(false);

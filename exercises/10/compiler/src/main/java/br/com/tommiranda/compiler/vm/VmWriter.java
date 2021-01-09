@@ -73,7 +73,7 @@ public class VmWriter {
             throw parseError(children.get(2), "Subroutine " + subroutineName + " redefined");
         }
 
-        symbolTable.startSubroutine(subroutineName, type, subroutineKind);
+        symbolTable.startSubroutine(symbolTable.getClassName(), subroutineName, type, subroutineKind);
 
         parameterList(children.get(4));
 
@@ -213,8 +213,20 @@ public class VmWriter {
                     vm_code.add("push " + symbolAttribute.getKind().getName() + " " + symbolAttribute.getIndex());
 
                     vm_code.add("call " + symbolAttribute.getType() + "." + subroutineName + " " + (numParameters + 1));
+
+                    Subroutine subroutineCall = new Subroutine(symbolAttribute.getType(), subroutineName, "", SubroutineKind.METHOD);
+                    subroutineCall.setCallClass(symbolTable.getClassName());
+                    subroutineCall.setCallNumber(child.getLineNumber());
+
+                    SymbolTable.getSubroutinesToVerify().add(subroutineCall);
                 } else {
                     vm_code.add("call " + variable + "." + subroutineName + " " + numParameters);
+
+                    Subroutine subroutineCall = new Subroutine(variable, subroutineName, "", SubroutineKind.FUNCTION);
+                    subroutineCall.setCallClass(symbolTable.getClassName());
+                    subroutineCall.setCallNumber(child.getLineNumber());
+
+                    SymbolTable.getSubroutinesToVerify().add(subroutineCall);
                 }
             } else if (children.get(2).getValue().equals("(")) {
                 String subroutineName = child.getValue();
@@ -229,6 +241,12 @@ public class VmWriter {
                 vm_code.add("push pointer 0");
 
                 vm_code.add("call " + symbolTable.getClassName() + "." + subroutineName + " " + (numParameters + 1));
+
+                Subroutine subroutineCall = new Subroutine(symbolTable.getClassName(), subroutineName, "", SubroutineKind.METHOD);
+                subroutineCall.setCallClass(symbolTable.getClassName());
+                subroutineCall.setCallNumber(child.getLineNumber());
+
+                SymbolTable.getSubroutinesToVerify().add(subroutineCall);
             } else if (children.get(2).getValue().equals("[")) {
                 if (symbolAttribute == null) {
                     throw parseError(children.get(2), variable + " undefined");
@@ -456,7 +474,7 @@ public class VmWriter {
             } else if (child.getValue().equals("true")) {
                 vm_code.add("push constant 0");
                 vm_code.add("not");
-            } else if(child.getValue().equals("this")) {
+            } else if (child.getValue().equals("this")) {
                 vm_code.add("push pointer 0");
             }
         } else {
@@ -487,15 +505,27 @@ public class VmWriter {
                         vm_code.add("push " + symbolAttribute.getKind().getName() + " " + symbolAttribute.getIndex());
 
                         vm_code.add("call " + symbolAttribute.getType() + "." + subroutineName + " " + (numParameters + 1));
+
+                        Subroutine subroutineCall = new Subroutine(symbolAttribute.getType(), subroutineName, "", SubroutineKind.METHOD);
+                        subroutineCall.setCallClass(symbolTable.getClassName());
+                        subroutineCall.setCallNumber(child.getLineNumber());
+
+                        SymbolTable.getSubroutinesToVerify().add(subroutineCall);
                     } else {
                         vm_code.add("call " + variable + "." + subroutineName + " " + numParameters);
+
+                        Subroutine subroutineCall = new Subroutine(variable, subroutineName, "", SubroutineKind.FUNCTION);
+                        subroutineCall.setCallClass(symbolTable.getClassName());
+                        subroutineCall.setCallNumber(child.getLineNumber());
+
+                        SymbolTable.getSubroutinesToVerify().add(subroutineCall);
                     }
                 } else if (children.get(1).getValue().equals("(")) {
                     String subroutineName = child.getValue();
 
-                    if (!SymbolTable.containsSubroutine(symbolTable.getClassName(), subroutineName)) {
-                        throw parseError(child, "Method " + symbolTable.getClassName() + "." + subroutineName + " doesn't exist");
-                    }
+//                    if (!SymbolTable.containsSubroutine(symbolTable.getClassName(), subroutineName)) {
+//                        throw parseError(child, "Method " + symbolTable.getClassName() + "." + subroutineName + " doesn't exist");
+//                    }
 
                     vm_code.addAll(expressionList(children.get(2)));
                     long numParameters = countParameters(children, 2);
@@ -503,6 +533,12 @@ public class VmWriter {
                     vm_code.add("push pointer 0");
 
                     vm_code.add("call " + symbolTable.getClassName() + "." + subroutineName + " " + (numParameters + 1));
+
+                    Subroutine subroutineCall = new Subroutine(symbolTable.getClassName(), subroutineName, "", SubroutineKind.METHOD);
+                    subroutineCall.setCallClass(symbolTable.getClassName());
+                    subroutineCall.setCallNumber(child.getLineNumber());
+
+                    SymbolTable.getSubroutinesToVerify().add(subroutineCall);
                 } else if (children.get(1).getValue().equals("[")) {
                     if (symbolAttribute == null) {
                         throw parseError(children.get(1), variable + " undefined");
