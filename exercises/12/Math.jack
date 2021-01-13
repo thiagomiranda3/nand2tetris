@@ -1,0 +1,149 @@
+/**
+ * A library of commonly used mathematical functions.
+ * Note: Jack compilers implement multiplication and division using OS method calls.
+ */
+class Math {
+
+    static int _2qy;
+    static Array bit;
+    
+    /** Initializes the library. */
+    function void init() {
+        var int i,j;
+
+		let i = 0;
+		let j = 1;
+		let bit = Array.new(16);
+		
+		while (i < 16){
+			let bit[i] = j;
+			let j = j+j;
+			let i = i+1;
+        }
+        
+		return;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        if(x<0) {
+			return -x;
+        }
+        
+		return x;
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x*y and multiply(x,y) return the same value.
+     */
+    function int multiply(int x, int y) {
+        var int sum, shiftedX, j;
+        
+        let sum = 0;
+		let shiftedX = x;
+        let j = 0;
+        
+		while (j < 16) {
+			if (y & bit[j] = bit[j]) {
+				let sum = sum + shiftedX;
+			}
+			
+			let j = j + 1;
+			let shiftedX = shiftedX + shiftedX;
+        }
+        
+		return sum;
+    }
+
+    /** Returns the integer part of x/y.
+     *  When a Jack compiler detects the multiplication operator '/' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x/y and divide(x,y) return the same value.
+     */
+    function int divide(int x, int y) {
+        let _2qy = 0;
+
+		if ((x < 0) & (y > 0)) {
+			return -Math.divideI(-x,y);
+		} else {
+			if ((x > 0) & (y < 0)) {
+				return -Math.divideI(x,-y);
+			} else {
+				if ((x < 0) & (y < 0)) {
+					return Math.divideI(-x,-y);
+				} else {
+					if (y = 0) {
+						do Sys.error("division by zero");
+						return 0;
+					} else {
+						return Math.divideI(x,y);
+					}
+				}
+			}
+		}
+    }
+
+    function int divideI(int x, int y) {
+        var int q;
+        
+		if ((y > x) | (y<0)) {
+			return 0;
+        }
+        
+		let q = Math.divideI(x, y + y);
+		
+		if (x - _2qy < y) {
+			return q + q;
+		}
+        
+        let _2qy = _2qy + y;
+        
+        return q + q + 1;
+    }
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+        var int y,j,h;
+		
+		if (x < 0) {
+			do Sys.error("sqrt of negative number");
+		}
+		
+		let y = 0;
+        let j = 7;
+        
+		while (j > -1) {
+			let h = y + bit[j];
+            let h = h * h;
+            
+			if ((h > 0) & (h < x) | (h = x)) {
+				let y = y + bit[j];
+            }
+            
+			let j = j - 1;
+        }
+        
+		return y;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+        if (a > b) {
+			return a;
+        }
+        
+		return b;
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+        if (a < b) {
+			return a;
+        }
+        
+
+		return b;
+    }
+}

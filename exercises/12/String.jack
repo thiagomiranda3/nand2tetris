@@ -1,0 +1,140 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/String.jack
+
+/**
+ * Represents character strings. In addition for constructing and disposing
+ * strings, the class features methods for getting and setting individual
+ * characters of the string, for erasing the string's last character,
+ * for appending a character to the string's end, and more typical
+ * string-oriented operations.
+ */
+ class String {
+
+	field Array rgch;
+	field int ich;
+	
+    /** Constructs a new empty String with a maximum length of maxLength. */
+    constructor String new(int maxLength) {
+		if(maxLength > 0) {
+			let rgch = Array.new(maxLength);
+		} else {
+			let rgch = null;
+        }
+        
+		let ich = 0;
+		
+		return this;
+    }
+
+    /** De-allocates the string and frees its space. */
+    method void dispose() {
+		if(~(rgch = null)) {
+			do rgch.dispose();
+			let rgch = null;
+        }
+        
+		return;
+    }
+
+    /** Returns the current length of this String. */
+    method int length() {
+		return ich;
+    }
+
+    /** Returns the character at location j. */
+    method char charAt(int j) {
+		return rgch[j];
+    }
+
+    /** Sets the j'th character of this string to be c. */
+    method void setCharAt(int j, char c) {
+		let rgch[j] = c;
+		return;
+    }
+
+    /** Appends the character c to the end of this String.
+     *  Returns this string as the return value. */
+    method String appendChar(char c) {
+		let rgch[ich] = c;
+		let ich = ich + 1;
+		
+		return this;
+    }
+
+    /** Erases the last character from this String. */
+    method void eraseLastChar() {
+		let ich = ich -1;
+		let rgch[ich] = 0;
+		
+		return;
+    }
+
+    /** Returns the integer value of this String until the first non
+     *  numeric character. */
+    method int intValue() {
+		var int i;
+		var int num;
+		
+		let i = 0;
+		if(rgch[i] = 45) {
+			let i = i + 1;
+		}
+		
+		let num = 0;
+		while(i < ich & (rgch[i] > 47 & rgch[i] < 58)) {
+			let num = 10 * num + (rgch[i] - 48);
+			let i = i+1;
+		}
+		
+		if(rgch[0] = 45) {
+			let num = -num;
+        }
+        
+		return num;
+    }
+
+    /** Sets this String to hold a representation of the given number. */
+    method void setInt(int number) {
+		let ich = 0;
+			
+		if(number < 0) {
+			do appendChar(45); // '-'
+			let number = -number;
+		}
+		
+		do setIntI(number);
+		return;
+    }
+	
+	method void setIntI(int number) {
+		var int lastDigit;
+	
+		if(number > 9) {
+			do setIntI(number / 10);
+			
+			let lastDigit = number - (number / 10 * 10);
+			do appendChar(48 + lastDigit);
+			let number = number / 10;
+		} else {
+			do appendChar(48 + number);
+        }
+        
+		return;
+	}
+    /** Returns the new line character. */
+    function char newLine() {
+		return 128;
+    }
+
+    /** Returns the backspace character. */
+    function char backSpace() {
+		return 129;
+    }
+
+    /** Returns the double quote (") character. */
+    function char doubleQuote() {
+		return 34;
+    }
+}

@@ -1,0 +1,153 @@
+/**
+ * A library of functions for displaying graphics on the screen.
+ * The Hack physical screen consists of 512 rows (indexed 0..511, top to bottom)
+ * of 256 pixels each (indexed 0..255, left to right). The top left pixel on 
+ * the screen is indexed (0,0).
+ */
+ class Screen {
+
+	static int screen;
+	static boolean color;
+	
+	static Array twoToThe;
+	
+    /** Initializes the Screen. */
+    function void init() {
+		var int i,j;
+		let i = 0;
+		let j = 1;
+		let twoToThe = Array.new(16);
+		
+		while(i < 16) {
+			let twoToThe[i] = j;
+			let j = j+j;
+			let i = i+1;
+		}
+		
+		let screen = 16384;
+		let color = true;
+		return;
+    }
+
+    /** Erases the whole screen. */
+    function void clearScreen() {
+        var int i;
+        
+		let i = screen;
+		
+		while((i < 24577)) {
+			do Memory.poke(i, 0);
+			let i = i + 1;
+        }
+        
+		return;
+    }
+
+    /** Sets the color to be used in further draw commands
+     *  where white = false, black = true. */
+    function void setColor(boolean b) {
+		let color = b;
+        
+        return;
+    }
+
+    /** Draws the (x, y) pixel. */
+    function void drawPixel(int x, int y) {
+        var int a,d;
+        
+		let a = screen + (y*32) + (x/16);
+		let d = x - (x/16*16);
+        
+        if(color) {
+			do Memory.poke(a, Memory.peek(a) | twoToThe[d]);
+		} else {
+			do Memory.poke(a, Memory.peek(a) & ~twoToThe[d]);
+        }
+        
+		return;
+    }
+
+    /** Draws a line from (x1, y1) to (x2, y2). */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+		//http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
+		var int dx,dy,sx,sy, err,e2;
+        
+        let dx = Math.abs(x2 - x1);
+		let dy = Math.abs(y2 - y1);
+        
+        if(x1 < x2) {
+			let sx = 1;
+		} else {
+			let sx = -1;
+		}
+		
+		if(y1 < y2) {
+			let sy = 1;
+		} else {
+			let sy = -1;
+		}
+		
+		let err = dx - dy;
+		
+		while(~((x1 = x2) & (y1 = y2))) {
+			do Screen.drawPixel(x1, y1);
+			let e2 = err + err;
+            
+            if(e2 > -dy) {
+				let err = err - dy;
+				let x1 = x1 + sx;
+			}
+			
+			if(e2 < dx) {
+				let err = err + dx;
+				let y1 = y1 + sy;
+			}
+        }
+        
+		do Screen.drawPixel(x1, y1);
+        
+        return;
+    }
+
+    /** Draws a filled rectangle where the top left corner
+     *  is (x1, y1) and the bottom right corner is (x2, y2). */
+    function void drawRectangle(int x1, int y1, int x2, int y2) 
+	{
+		while(~(y1 = y2)) {
+			do Screen.drawLine(x1, y1, x2, y1);
+			let y1 = y1+1;
+        }
+        
+		do Screen.drawLine(x1, y1, x2, y1);
+        
+        return;
+    }
+
+    /** Draws a filled circle of radius r around (cx, cy). */
+	
+    function void drawCircle(int x0, int y0, int radius) {
+		//http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+		var int x,y, radiusError;
+        
+        let x = radius;
+		let y = 0;
+		let radiusError = 1 - x;
+
+		while((x = y) | (x > y)) {
+			do Screen.drawLine(x + x0, y + y0, -x + x0, y + y0);
+			do Screen.drawLine(y + x0, x + y0, -y + x0, x + y0);
+			do Screen.drawLine(-x + x0, -y + y0, x + x0, -y + y0);
+			do Screen.drawLine(y + x0, -x + y0, -y + x0, -x + y0);
+		
+			let y = y + 1;
+			if (radiusError<0) {
+				let radiusError = radiusError + (2 * y) + 1;
+			} else {
+				let x = x - 1;
+				let radiusError = radiusError + (2 * (y - x + 1));
+			}
+        }
+        
+		return;
+    }
+}

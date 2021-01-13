@@ -1,0 +1,103 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+ class Memory {
+	
+	static Array mem;
+	static int heapBase;
+	static int heapLim;
+	static int ptrFreeFirst;
+	
+    /** Initializes memory parameters. */
+    function void init() {
+		let mem = 0;
+		
+		let heapBase = 2048;
+		let heapLim = 16384;
+		
+		let mem[heapBase] = 16384 - 2048;
+		let mem[heapBase+1] = 0;
+		
+        let ptrFreeFirst = heapBase;
+        
+		return;
+    }
+
+    /** Returns the value of the main memory at the given address. */
+    function int peek(int address) {
+		return mem[address];
+    }
+
+    /** Sets the value of the main memory at this address
+     *  to the given value. */
+    function void poke(int address, int value) {
+        let mem[address] = value;
+        
+		return;
+    }
+
+    /** finds and allocates from the heap a memory block of the 
+     *  specified size and returns a reference to its base address. */
+    function int alloc(int size) {
+		var int ptrPrev;
+		var int ptrCur;
+		var int ptrBlockNew;
+		
+		let ptrCur = ptrFreeFirst;
+		
+		while(true) {
+			if (ptrCur = 0) {
+				do Sys.error("out of memory");
+			}
+			
+			if(size < (mem[ptrCur] + 1))
+			{
+				//first fit
+				if((mem[ptrCur] - size) > 1)
+				{
+					let ptrBlockNew = ptrCur + size + 1;
+					let mem[ptrBlockNew] = mem[ptrCur] - size - 1;
+					let mem[ptrBlockNew+1] = mem[ptrCur+1];
+					
+					let mem[ptrCur] = size;
+					
+					if (ptrPrev = 0) {
+						let ptrFreeFirst = ptrBlockNew;
+					}
+					else {
+						let mem[ptrPrev + 1] = ptrBlockNew;
+					}
+				} else {
+					if (ptrPrev = 0) {
+						let ptrFreeFirst = mem[ptrCur + 1];
+					}
+					else {
+						let mem[ptrPrev + 1] = mem[ptrCur + 1];
+					}
+                }
+                
+				return ptrCur+1;
+			}
+			
+			let ptrPrev = ptrCur;
+			let ptrCur = mem[ptrCur + 1];
+		}
+		
+		return 0;
+    }
+
+    /** De-allocates the given object and frees its space. */
+    function void deAlloc(int object) {
+		let mem[object] = ptrFreeFirst;
+		let ptrFreeFirst = object -1;
+		
+		return;
+    }
+ }
